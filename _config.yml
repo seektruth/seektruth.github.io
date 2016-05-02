@@ -1,4 +1,0 @@
-markdown: redcarpet
-baseurl: 
-exclude: ['README.md']
-port: 5001
