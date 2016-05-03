@@ -1,16 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[My Octopress Blog]]></title>
+  <title><![CDATA[SeekTruth]]></title>
   <link href="/atom.xml" rel="self"/>
   <link href="/"/>
-  <updated>2016-05-02T18:01:11-04:00</updated>
+  <updated>2016-05-02T21:36:44-04:00</updated>
   <id>/</id>
   <author>
-    <name><![CDATA[Your Name]]></name>
+    <name><![CDATA[SeekTruth]]></name>
     
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[第一次博客 how?why?]]></title>
+    <link href="/blog/2016/05/02/first-blog/"/>
+    <updated>2016-05-02T19:08:27-04:00</updated>
+    <id>/blog/2016/05/02/first-blog</id>
+    <content type="html"><![CDATA[<h1>第一次博客 how?why?</h1>
+
+<h2>Jekyll</h2>
+
+<p>很早就想架设一个自己的网站，但是却苦于一直不知道技术，故而有心无力。偶然在quora上看到对ruby开发框架的讨论，了解到了自己以前一直不知道的jekyll，深入了解之后发现它可以和github配合轻松搭建个人网站，github提供了免费的空间，因此就不需要我们专门去申请空间了。</p>
+
+<h2>新技术的训练</h2>
+
+<p>通过这个独立的博客练习前端技术HTML、CSS还有Git。</p>
+
+<h2>强迫自己</h2>
+
+<p>当然还有就是强制自己写博客，记录自己的点滴，以前总是说要写一些文章，但是都因为懒而没有坚持下来。</p>
+
+<!-- more -->
+
+
+<h2>next</h2>
+
+<p>接下来也许就是会写一些自己阅读、技术的感悟吧。
+接下来的一篇文章就写写如何通过jekyll来架站吧。</p>
+]]></content>
+  </entry>
   
 </feed>
