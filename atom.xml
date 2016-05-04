@@ -4,7 +4,7 @@
   <title><![CDATA[SeekTruth]]></title>
   <link href="/atom.xml" rel="self"/>
   <link href="/"/>
-  <updated>2016-05-02T21:36:44-04:00</updated>
+  <updated>2016-05-03T23:28:47-04:00</updated>
   <id>/</id>
   <author>
     <name><![CDATA[SeekTruth]]></name>
@@ -18,27 +18,46 @@
     <link href="/blog/2016/05/02/first-blog/"/>
     <updated>2016-05-02T19:08:27-04:00</updated>
     <id>/blog/2016/05/02/first-blog</id>
-    <content type="html"><![CDATA[<h1>第一次博客 how?why?</h1>
+    <content type="html"><![CDATA[<p><font size=4 style="line-height:150%;"></p>
+
+<h1>第一次博客 how?why?</h1>
+
+<hr />
 
 <h2>Jekyll</h2>
 
-<p>很早就想架设一个自己的网站，但是却苦于一直不知道技术，故而有心无力。偶然在quora上看到对ruby开发框架的讨论，了解到了自己以前一直不知道的jekyll，深入了解之后发现它可以和github配合轻松搭建个人网站，github提供了免费的空间，因此就不需要我们专门去申请空间了。</p>
+<p>很早就想架设一个自己的网站，但是却苦于一直不知道技术，故而有心无力。偶然在<a href="https://www.quora.com/">quora</a>上看到对<a href="http://www.ruby-lang.org/">ruby</a>开发框架的讨论了解到了自己以前一直不知道的jekyll。深入了解之后发现它可以和<a href="https://github.com">github</a>配合轻松搭建个人网站，github提供了免费的空间，因此就不需要去专门申请空间了。是否购买域名也是可选的，以后我可能回去购买一个域名吧。</p>
+
+<hr />
 
 <h2>新技术的训练</h2>
 
-<p>通过这个独立的博客练习前端技术HTML、CSS还有Git。</p>
-
-<h2>强迫自己</h2>
-
-<p>当然还有就是强制自己写博客，记录自己的点滴，以前总是说要写一些文章，但是都因为懒而没有坚持下来。</p>
+<p>当然除了贯彻自己之前的想法，通过这个独立的博客也能练习自己的前端技术HTML、CSS、JavaScript。还能够练习使用<a href="http://daringfireball.net/projects/markdown/">markdown</a>和<a href="https://git-scm.com/">git</a>，当然还有自己的写作水平。</p>
 
 <!-- more -->
 
 
+<hr />
+
+<h2>强迫自己</h2>
+
+<p>当然还有就是强制自己写博客，以前总是很多次心血来潮说要写一些文章，但是都因为懒只写个开头就放弃了。或者写了一两篇然后就坚持不下来了。希望这个网站能够让我长久的坚持写作。</p>
+
+<hr />
+
 <h2>next</h2>
 
-<p>接下来也许就是会写一些自己阅读、技术的感悟吧。
-接下来的一篇文章就写写如何通过jekyll来架站吧。</p>
+<p>接下来也许会写一些：</p>
+
+<ul>
+<li>写的代码</li>
+<li>看过的书、看过的片、看过的动漫</li>
+<li>其他想写的</li>
+</ul>
+
+
+<p>接下来的一篇文章就写写如何通过jekyll来架站吧。
+</font></p>
 ]]></content>
   </entry>
   
