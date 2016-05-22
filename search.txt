@@ -1,0 +1,161 @@
+{
+    "杭州紫金港特大酒店":
+        {
+        "city": "上海",
+        "province": "浙江",
+        "location": "西湖区 申花路798号",
+        "rank": 3.3,
+        "amount": 135,
+        "room": 
+            {
+                "经济间": 129,
+                "标准间": 345
+            },
+        "lowest price": 135,
+        "picture": "hotel/0001.jpg"
+        },
+
+         "杭州紫金港大大酒店":
+        {
+        "city": "北京",
+        "province": "浙江",
+        "location": "西湖区 申花路798号",
+        "rank": 4.3,
+        "amount": 141,
+        "room": 
+            {
+                "经济间": 129,
+                "标准间": 345
+            },
+        "lowest price": 1290,
+        "picture": "hotel/0001.jpg"
+        },
+
+         "杭州紫金港大酒店":
+        {
+        "city": "上海",
+        "province": "浙江",
+        "location": "西湖区 申花路798号",
+        "rank": 5.0,
+        "amount": 1,
+        "room": 
+            {
+                "经济间": 129,
+                "标准间": 345
+            },
+        "lowest price": 1980,
+        "picture": "hotel/0001.jpg"
+        },
+
+         "杭州紫金港大小酒店":
+        {
+        "city": "北京",
+        "province": "浙江",
+        "location": "西湖区 申花路798号",
+        "rank": 3.5,
+        "amount": 163,
+        "room": 
+            {
+                "经济间": 129,
+                "标准间": 345
+            },
+        "lowest price": 29,
+        "picture": "hotel/0001.jpg"
+        },
+
+         "杭州紫金港中大酒店":
+        {
+        "city": "成都",
+        "province": "浙江",
+        "location": "西湖区 申花路798号",
+        "rank": 3.5,
+        "amount": 15,
+        "room": 
+            {
+                "经济间": 129,
+                "标准间": 345
+            },
+        "lowest price": 229,
+        "picture": "hotel/0001.jpg"
+        },
+
+         "杭州紫金港中酒店":
+        {
+        "city": "上海",
+        "province": "浙江",
+        "location": "西湖区 申花路798号",
+        "rank": 4.1,
+        "amount": 137,
+        "room": 
+            {
+                "经济间": 129,
+                "标准间": 345
+            },
+        "lowest price": 629,
+        "picture": "hotel/0001.jpg"
+        },
+
+         "杭州紫金港中小酒店":
+        {
+        "city": "成都",
+        "province": "浙江",
+        "location": "西湖区 申花路798号",
+        "rank": 5,
+        "amount": 1,
+        "room": 
+            {
+                "经济间": 129,
+                "标准间": 345
+            },
+        "lowest price": 129,
+        "picture": "hotel/0001.jpg"
+        },
+
+         "杭州紫金港小大酒店":
+        {
+        "city": "北京",
+        "province": "浙江",
+        "location": "西湖区 申花路798号",
+        "rank": 4.5,
+        "amount": 108,
+        "room": 
+            {
+                "经济间": 129,
+                "标准间": 345
+            },
+        "lowest price": 29,
+        "picture": "hotel/0001.jpg"
+        },
+
+         "杭州紫金港小酒店":
+        {
+        "city": "天津",
+        "province": "浙江",
+        "location": "西湖区 申花路798号",
+        "rank": 4.2,
+        "amount": 135,
+        "room": 
+            {
+                "经济间": 129,
+                "标准间": 345
+            },
+        "lowest price": 1290,
+        "picture": "hotel/0001.jpg"
+        },
+
+         "杭州紫金港小小酒店":
+        {
+        "city": "成都",
+        "province": "浙江",
+        "location": "西湖区 申花路798号",
+        "rank": 3.5,
+        "amount": 190,
+        "room": 
+            {
+                "经济间": 129,
+                "标准间": 345
+            },
+        "lowest price": 12,
+        "picture": "hotel/0001.jpg"
+        }
+}
