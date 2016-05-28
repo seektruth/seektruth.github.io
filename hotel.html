@@ -1,139 +1,189 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head><meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>PHP soup 酒店机票查询预订</title>
-<meta name="description" content="PHP soup提供便捷快速的酒店机票服务">
-<meta name="keywords" content="酒店 机票">
-<meta name="author" content="软件工程基础2.3组">
-<link href="css/bootstrap.min.css" rel="stylesheet">
-<link href="css/font-awesome.css" rel="stylesheet">
-<link href="css/site.min.css" rel="stylesheet">
-<!--[if lt IE 9]>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>远途网 酒店机票查询预订</title>
+    <meta name="description" content="远途网提供便捷快速的酒店机票服务">
+    <meta name="keywords" content="酒店 机票">
+    <meta name="author" content="软件工程基础2.3组">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/font-awesome.css" rel="stylesheet">
+    <link href="css/site.min.css" rel="stylesheet">
+    <!--[if lt IE 9]>
     <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
     <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
-<![endif]-->
-  <script>var _hmt = _hmt || [];</script>
-  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="ico/apple-touch-icon-144-precomposed.png">
-  <link rel="shortcut icon" href="/assets/ico/favicon.ico"></head>
+    <![endif]-->
+    <script>var _hmt = _hmt || [];</script>
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="ico/apple-touch-icon-144-precomposed.png">
+    <link rel="shortcut icon" href="/assets/ico/favicon.ico"><script async src="http://c.cnzz.com/core.php"></script></head>
+<style type="text/css" title="text/css" media="all">
+    label {
+        font-weight: bold;
+        color: #300ACC;
+    }
+    html{
+        height:100%;
+        font-size: 25px;
+    }
+    body{height:100%;margin:0px;padding:0px}
+    #BaiduMap{height:300px;width: 300px}
+</style>
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=1.4"></script>
 
-  <body class="home-template">
-  <!--<div class="site-notice">
-  <a href="http://blog.bootcdn.cn/bootcdn-support-https/" target="_blank">
-  <em>BootCDN 已经支持 HTTPS 协议啦！</em></a>
-</div>-->
+<body class="home-template">
+
+
 <header class="site-header jumbotron">
-<div class="site-nav">
-  <a href="#about">登录</a>
-  <a href="#about">关于</a>
-  </div>
-  <div class="container"><div class="row"><div class="col-xs-12"><h1>PHP soup</h1>
-  <p>免费快捷的机票酒店查询服务<br>
+    <div class="navbar navbar-inverse navbar-fixed-top hidden-print navbar-back"><div class="container-fluid"><a href="/" ><img src="icon" width="120" height="60" alt="网站图标"></a></div></div>
+
+    <div class="site-nav">
+        <a href="#about">登录</a>
+        <a href="#about">关于</a>
+    </div>
+    <div class="container"><div class="row"><div class="col-xs-12">
+        <a href="my_hotel.html" style="color: white;text-decoration: none"><h1>远途网</h1></a>
+        <p>免费快捷的机票酒店查询服务</p><br>
   <span class="package-amount">共收录了
    <strong>165478</strong> 个全国各地的酒店，<strong>19638</strong>个来自全球<strong>361</strong>家航空公司的航班</span></p>
 
-    <h3><a href="hotel.html" style="color: white;">酒店</a> <a href="flight.html">机票</a></h3>
-   <form class="" role="search"><div class="form-group"><input type="text" class="form-control search clearable" placeholder="搜索酒店和航班，例如：杭州 布丁酒店 紫金港大酒店"> 
-  <i class="fa fa-search"></i></div></form></div></div></div></header>
+        <h3><a href="my_hotel.php" style="color: white;">酒店</a> <a href="my_flight.php">机票</a></h3></div></div></div></header>
 
-<div class="mostused-packages well well-sm text-center hidden-xs hidden-sm">
-<form class="list-inline">
-地点：
-<input type="checkbox" name="bike" />
-北京
-<input type="checkbox" name="car" />
-上海
-其他请输入
-<input type="text" name="firstname" />
-</form>
-<form class="list-inline">
-价格：
-<input type="checkbox" name="bike" />
-100以下
-<input type="checkbox" name="car" />
-100-200
-<input type="checkbox" name="car" />
-200以上
-<input type="submit" value="筛选" />
-</form>
-<form class="list-inline">
-排序：
-<input type="radio" name="car" />
-价格
-<input type="radio" name="car" />
-评分
-<input type="radio" checked="checked" name="car" />
-人气
-</form>
-</ul>
-</div>
-
-
- 
-  <!--<div class="container protocal-notice">
-<div class="row"><div class="col-xs-12 hidden-xs"><form class="form-inline pull-right"><label>选择协议：</label><div class="btn-group" data-toggle="buttons"><label class="btn btn-default active"><input type="radio" name="options" id="relative" autocomplete="off" checked>自适应</label><label class="btn btn-default"><input type="radio" name="options" id="http" autocomplete="off">http</label><label class="btn btn-default"><input type="radio" name="options" id="https" autocomplete="off">https</label></div><span class="help-block"><a href="http://blog.bootcdn.cn/bootcdn-support-https/" target="_blank" onclick="_hmt.push(['_trackEvent', 'notice', 'click', 'protocal-notice'])">了解详情 <i class="fa fa-info-circle"></i></a></span></form></div></div></div>-->
-
-  <main class="packages-list-container" id="all-packages">
+<div class="main">
+<div>
+    <h2 style="text-align: center">杭州紫金港超级大酒店</h2><br>
     <div class="container">
-        <div class="list-group packages">
-            <a href="/hotels.php?紫金港大酒店" class="package list-group-item" data-library-name="bootstrap" target="_blank" ">
-                <div class="row">
-                    <div class="col-md-3">
-                        <h4 class="package-name">紫金港大酒店</h4>
-                        <br />
-                         <img src="/hotel/0001.jpg" width="100px" height="100px" />
-                    </div>
-                    <div class="col-md-9 hidden-xs>
-                    <p class="package-description">浙江省 杭州市 西湖区 申花路798号</p>
-                    <span> 1024名用户曾经入住</span><br>
-                    <span>房价： 129<i>起</i></span><br>
-                    <span></i> 评分： <strong>3.5/5</strong></span>
-                    </div>
+        <div class="row">
+            <div class="col-md-3"></div>
+            <div class="col-md-6">
+    <form class="navbar-form navbar-left" role="search" style="text-align:center;margin:0 auto;">
+        <div class="form-group">
+            <input type="text" class="form-control" placeholder="城市">
+            <input type="text" class="form-control" placeholder="酒店名 地标">
+        </div>
+        <button type="submit" class="btn btn-default">查看其它酒店</button>
+    </form>
                 </div>
-            <!--<div class="package-extra-info col-md-9 col-md-offset-3 col-xs-12">
-            </div>-->
-        </a>
-           这里需要用hotel.php来加载更多的默认的酒店信息
-           还需要用searchhotel.php来返回查询酒店信息的结果
-           点击特定的酒店后还需要一个hotels.php来动态生成特定的酒店的页面
+            <div class="col-md-3"></div>
+            </div>
+        </div>
+    <br>
+    <br>
+    <br>
+
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-9">
+            <img src="hotel/0002.jpg">
+                </div>
+            <div class="col-md-3">
+
+
+                <ul class="list-group">
+                    <li class="list-group-item"><img src="img/star.png"><img src="img/star.png">
+                        <img src="img/star.png"><img src="img/halfstar.png">
+                        <img src="img/emptystar.png"> <strong>3.6/5分</strong></li>
+                    <li class="list-group-item">浙江省 杭州市 西湖区</li>
+                    <li class="list-group-item">申花路798号</li>
+                    <li class="list-group-item"><strong>1024</strong>人曾经入住</li>
+                    <li class="list-group-item"><strong>2</strong>份评价</li>
+                </ul>
+            </div>
         </div>
     </div>
- 
- 
- </main>
 
+    <br>
+    <br>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+    <div class="panel panel-default" >
+        <!-- Default panel contents -->
+        <div class="panel-heading">房型列表</div>
+        </div>
+    <table name="room-type" class="table">
+        <tr>
+            <td>单人间</td>
+            <td>大床</td>
+            <td>免费无线网络</td>
+            <td>198</td>
+            <td><button type="button" class="btn-info">马上预订</button></td>
+        </tr>
+        <tr>
+            <td>标准间</td>
+            <td>大床</td>
+            <td>免费无线网络</td>
+            <td>205</td>
+            <td><button type="button" class="btn-info">马上预订</button></td>
+        </tr>
+        <tr>
+            <td>总统套房</td>
+            <td>大床</td>
+            <td>免费无线网络</td>
+            <td>361</td>
+            <td><button type="button" class="btn-info">马上预订</button> </td>
+        </tr>
+    </table>
+                </div>
+            <div class="col-md-4"><div id="BaiduMap" style="float: right"></div></div>
+</div>
+        </div>
+        </div>
+
+<br><br>
+
+<main id="all-packages">
+
+    <div class="container" id="comments">
+
+        <div class="list-group packages">
+            <div class="panel panel-default" >
+                <!-- Default panel contents -->
+                <div class="panel-heading"><h4>用户评论</h4></div>
+            </div>
+            <div  class="list-group-item">
+                <user>手机用户1345657235：</user>
+               真的很不错啊
+            </div>
+            <div class="list-group-item">
+                <user>手机用户13456572456：</user>
+                拥护习主席，拥护党中央
+            </div>
+
+        </div>
+</main>
+</div>
 
 <footer id="footer" class="footer hidden-print">
-<div class="container">
-<div class="row">
+    <div class="container">
+        <div class="row">
+            <div class="footer-about col-md-6 col-sm-12" id="about">
+                <h4>关于 远途网</h4>
+                <p>远途网是 浙江大学张引老师软件工程基础课程第二项目组支持并维护的开源项目，致力于为提供稳定、快速便捷的免费酒店机票查询和预订服务。项目主要同步于 <a href="https://github.com/onlinePayment/on-line-payment" target="_blank" onclick="_hmt.push(['_trackEvent', 'footer', 'click', 'footer-github.com'])">on-line-payment</a> 仓库。</p>
+                <p>自<time>2016年13月32日</time>上线以来已经为超过十万个用户提供了稳定、可靠、便捷服务。</p>
+                <p>反馈或建议请发送邮件至：phpsoup@163.com</p></div>
 
-<div class="footer-about col-md-6 col-sm-12" id="about">
-<h4>关于 PHP soup</h4>
-<p>PHP soup是 浙江大学张引老师软件工程基础课程第二项目组支持并维护的开源项目，致力于为提供稳定、快速便捷的免费酒店机票查询和预订服务。项目主要同步于 <a href="https://github.com/onlinePayment/on-line-payment" target="_blank" onclick="_hmt.push(['_trackEvent', 'footer', 'click', 'footer-github.com'])">on-line-payment</a> 仓库。</p>
-<p>自<time>2016年13月32日</time>上线以来已经为超过十万个用户提供了稳定、可靠、便捷服务。</p>
-<p>反馈或建议请发送邮件至：phpsoup@163.com</p></div>
+            <div class="footer-links col-md-3 col-sm-12">
+                <h4>友情链接</h4>
+                <ul class="list-unstyled">
+                    <li><a href="http://www.bootcss.com/" target="_blank" onclick="_hmt.push(['_trackEvent', 'footer', 'click', 'footer-bootcss.com'])">Bootstrap 中文网</a></li>
+                    <li><a href="http://www.ghostchina.com/" target="_blank" onclick="_hmt.push(['_trackEvent', 'footer', 'click', 'footer-ghostchina.com'])">Ghost 中国</a></li>
+                    <li><a href="http://www.jquery123.com/" target="_blank" onclick="_hmt.push(['_trackEvent', 'footer', 'click', 'footer-jquery123.com'])">jQuery 中文 API</a></li>
+                    <li><a href="http://github.com/" target="_blank" onclick="_hmt.push(['_trackEvent', 'footer', 'click', 'footer-github.com'])">Github</a></li></ul></div>
 
-<div class="footer-links col-md-3 col-sm-12">
-<h4>友情链接</h4>
-<ul class="list-unstyled">
-<li><a href="http://www.bootcss.com/" target="_blank" onclick="_hmt.push(['_trackEvent', 'footer', 'click', 'footer-bootcss.com'])">Bootstrap 中文网</a></li>
-<li><a href="http://www.ghostchina.com/" target="_blank" onclick="_hmt.push(['_trackEvent', 'footer', 'click', 'footer-ghostchina.com'])">Ghost 中国</a></li>
-<li><a href="http://www.jquery123.com/" target="_blank" onclick="_hmt.push(['_trackEvent', 'footer', 'click', 'footer-jquery123.com'])">jQuery 中文 API</a></li>
-<li><a href="http://github.com/" target="_blank" onclick="_hmt.push(['_trackEvent', 'footer', 'click', 'footer-github.com'])">Github</a></li></ul></div>
+            <div class="footer-techs col-md-3 col-sm-12">
+                <h4>我们用到的技术</h4>
+                <ul class="list-unstyled">
+                    <li><a href="http://www.bootcss.com/" target="_blank" onclick="_hmt.push(['_trackEvent', 'footer', 'click', 'footer-bootcss.com'])">Bootstrap</a></li>
+                    <li><a href="http://www.jquery123.com/" target="_blank" onclick="_hmt.push(['_trackEvent', 'footer', 'click', 'footer-jquery123.com'])">jQuery</a></li>
+                    <li><a href="http://php.net/" target="_blank" onclick="_hmt.push(['_trackEvent', 'footer', 'click', 'footer-php.cn'])">PHP</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
 
-<div class="footer-techs col-md-3 col-sm-12">
-<h4>我们用到的技术</h4>
-<ul class="list-unstyled">
-<li><a href="http://www.bootcss.com/" target="_blank" onclick="_hmt.push(['_trackEvent', 'footer', 'click', 'footer-bootcss.com'])">Bootstrap</a></li>
-<li><a href="http://www.jquery123.com/" target="_blank" onclick="_hmt.push(['_trackEvent', 'footer', 'click', 'footer-jquery123.com'])">jQuery</a></li>
-<li><a href="http://php.net/" target="_blank" onclick="_hmt.push(['_trackEvent', 'footer', 'click', 'footer-php.cn'])">PHP</a></li>
-</ul>
-</div>
-</div>
-</div>
-
-<div class="copy-right"><span>&copy; 2016</span> </div>
+    <div class="copy-right"><span>copyright&copy; 2016</span> </div>
 </footer>
 <a href="#" id="back-to-top"><i>返回顶部</i></a>
 
@@ -142,7 +192,22 @@
 </script><script src="//cdn.bootcss.com/geopattern/1.2.3/geopattern.min.js"></script>
 <script src="//cdn.bootcss.com/zeroclipboard/2.2.0/ZeroClipboard.min.js"></script>
 <script src="//cdn.bootcss.com/localforage/1.2.4/localforage.nopromises.min.js"></script>
-<script src="js/site.min.js"></script>
+<!--<script src="js/site.min.js"></script>-->
 <script type="text/javascript">var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
-    document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F24aff315392dc2c9b2805cfa4d8e101a' type='text/javascript'%3E%3C/script%3E"));</script>
-    </body></html>
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F24aff315392dc2c9b2805cfa4d8e101a' type='text/javascript'%3E%3C/script%3E"));</script>
+<script type="text/javascript">
+    var map = new BMap.Map("BaiduMap");          // 创建地图实例
+    var point = new BMap.Point(120.100133,30.312355);
+    var marker = new BMap.Marker(point); // 创建点坐标
+    map.addOverlay(marker);//把标注加入到地图当中
+    map.addControl(new BMap.NavigationControl());
+    map.addControl(new BMap.ScaleControl());
+    map.addControl(new BMap.OverviewMapControl());
+    map.addControl(new BMap.MapTypeControl());
+    map.enableScrollWheelZoom();
+    //map.setCurrentCity("杭州"); // 仅当设置城市信息时，MapTypeControl的切换功能才能可用
+    map.centerAndZoom(point, 16);                 // 初始化地图，设置中心点坐标和地图级别
+</script>
+<style>
+
+</style>
