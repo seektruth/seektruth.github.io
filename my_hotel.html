@@ -3,8 +3,8 @@
 <head><meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>PHP soup 酒店机票查询预订</title>
-    <meta name="description" content="PHP soup提供便捷快速的酒店机票服务">
+    <title>远途网 酒店机票查询预订</title>
+    <meta name="description" content="远途网提供便捷快速的酒店机票服务">
     <meta name="keywords" content="酒店 机票">
     <meta name="author" content="软件工程基础2.3组">
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -29,7 +29,7 @@
         <a href="#about">登录</a>
         <a href="#about">关于</a>
     </div>
-    <div class="container"><div class="row"><div class="col-xs-12"><h1>PHP soup</h1>
+    <div class="container"><div class="row"><div class="col-xs-12"><h1>远途网</h1>
                 <p>免费快捷的机票酒店查询服务</p><br>
   <span class="package-amount">共收录了
    <strong>165478</strong> 个全国各地的酒店，<strong>19638</strong>个来自全球<strong>361</strong>家航空公司的航班</span></p>
@@ -37,27 +37,9 @@
                 <h3><a href="my_hotel.php" style="color: white;">酒店</a> <a href="my_flight.php">机票</a></h3>
                 <form id="search" method="get" action="search.php">
                 <div class="form-group">
-                <input type="text" class="form-control search clearable" placeholder="搜索酒店和航班，例如：杭州 布丁酒店 紫金港大酒店">
+                <input type="text" class="form-control search clearable" placeholder="搜索酒店，例如：杭州 布丁酒店 紫金港大酒店">
                         </i></div></form></div></div></div></header>
 
-<div>
-    <form>
-            <p><label for="place">地点: </label>
-                <input type="checkbox" name="city" value="beijing" /> 北京
-                <input type="checkbox" name="city" value="shanghai" /> 上海
-                <input type="checkbox" name="city" value="other" /> 其他</p>
-
-            <p><label for="checkbox">价格: </label>
-                <input type="checkbox" name="price" value="100-" /> 100以下
-                <input type="checkbox" name="price" value="200-" /> 100-200
-                <input type="checkbox" name="price" value="200+" /> 200以上</p>
-
-            <p><label for="sort">排序: </label>
-                <input type="radio" name="sort" value="price" id="price"/> 价格
-                <input type="radio" name="sort" value="grade" id="rank"/> 评分
-                <input type="radio" name="sort" value="popularity" id="hot"/> 人气</p>
-    </form>
-</div>
 
 
 
@@ -65,9 +47,30 @@
 <div class="row"><div class="col-xs-12 hidden-xs"><form class="form-inline pull-right"><label>选择协议：</label><div class="btn-group" data-toggle="buttons"><label class="btn btn-default active"><input type="radio" name="options" id="relative" autocomplete="off" checked>自适应</label><label class="btn btn-default"><input type="radio" name="options" id="http" autocomplete="off">http</label><label class="btn btn-default"><input type="radio" name="options" id="https" autocomplete="off">https</label></div><span class="help-block"><a href="http://blog.bootcdn.cn/bootcdn-support-https/" target="_blank" onclick="_hmt.push(['_trackEvent', 'notice', 'click', 'protocal-notice'])">了解详情 <i class="fa fa-info-circle"></i></a></span></form></div></div></div>-->
 
 <main class="packages-list-container" id="all-packages">
-    <div class="container" id="hotels">
-        <div class="list-group packages">
+    <div class="container">
+        <div class="row">
 
+            <div class="col-md-4">
+                <ul class="list-group">
+                    <li class="list-group-item"><label for="place">地点: </label>
+                        <input type="checkbox" name="city" value="beijing" /> <span class="label label-success">北京</span>
+                        <input type="checkbox" name="city" value="shanghai" /> <span class="label label-success">上海</span>
+                        <input type="checkbox" name="city" value="other" /> <span class="label label-success">其他</span></li>
+                    <li class="list-group-item">
+                        <label for="checkbox">价格: </label>
+                        <input type="checkbox" name="price" value="100-" /> <span class="label label-warning">100以下</span>
+                        <input type="checkbox" name="price" value="200-" /> <span class="label label-warning">100-200</span>
+                        <input type="checkbox" name="price" value="200+" /> <span class="label label-warning">200以上</span>
+                    <li class="list-group-item">
+                    <label for="sort">排序: </label>
+                    <button class="btn-info" name="sort" value="price" id="price"> 价格</button><img src="img/up.png">
+                    <button class="btn-info" name="sort" value="grade" id="rank"> 评分</button><img src="img/down.png">
+                    <button class="btn-info" name="sort" value="popularity" id="hot"> 人气</button><img src="img/down.png">
+                  </li>
+                </ul>
+            </div>
+            <div class="list-group packages" id="hotels">
+        <div class="col-md-8" >
         <a href="/hotels.php?紫金港大酒店" class="package list-group-item" data-library-name="bootstrap" target="_blank" ">
             <div class="row">
                 <div class="col-md-3">
@@ -85,7 +88,9 @@
         <!--<div class="package-extra-info col-md-9 col-md-offset-3 col-xs-12">
         </div>-->
         </a>
-        
+
+            </div>
+        </div>
     </div>
     </div>
 
@@ -97,8 +102,8 @@
     <div class="container">
         <div class="row">
             <div class="footer-about col-md-6 col-sm-12" id="about">
-                <h4>关于 PHP soup</h4>
-                <p>PHP soup是 浙江大学张引老师软件工程基础课程第二项目组支持并维护的开源项目，致力于为提供稳定、快速便捷的免费酒店机票查询和预订服务。项目主要同步于 <a href="https://github.com/onlinePayment/on-line-payment" target="_blank" onclick="_hmt.push(['_trackEvent', 'footer', 'click', 'footer-github.com'])">on-line-payment</a> 仓库。</p>
+                <h4>关于 远途网</h4>
+                <p>远途网是 浙江大学张引老师软件工程基础课程第二项目组支持并维护的开源项目，致力于为提供稳定、快速便捷的免费酒店机票查询和预订服务。项目主要同步于 <a href="https://github.com/onlinePayment/on-line-payment" target="_blank" onclick="_hmt.push(['_trackEvent', 'footer', 'click', 'footer-github.com'])">on-line-payment</a> 仓库。</p>
                 <p>自<time>2016年13月32日</time>上线以来已经为超过十万个用户提供了稳定、可靠、便捷服务。</p>
                 <p>反馈或建议请发送邮件至：phpsoup@163.com</p></div>
 
@@ -135,6 +140,10 @@
     document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F24aff315392dc2c9b2805cfa4d8e101a' type='text/javascript'%3E%3C/script%3E"));</script>
 <script type="text/javascript">
 
+    var priceupdown="up";
+    var hotupdown="down";
+    var rankupdown="down";
+
         $(function()
         {
             $("#search").submit(function(){
@@ -146,7 +155,7 @@
                     $("#hotels>div>a").remove();
                     hotels=JSON.parse(response);
                     for(hotel in hotels){
-                        $("#hotels>").append('<a href="/hotels.php?'+hotel+`" class="package list-group-item" data-library-name="bootstrap" target="_blank" "><div class="row"><div class="col-md-3"><h4 class="package-name">`+hotel+'</h4><br /><img src="'+hotels[hotel]["picture"]+'" width="100px" height="100px" /></div><div class="col-md-9 hidden-xs><p class="package-description"><pr>'+hotels[hotel]["province"]+'</pr> <city>'+hotels[hotel]["city"]+'</city>  '+hotels[hotel]["location"]+'</p><span> <hot>'+hotels[hotel]["amount"]+'</hot>名用户曾经入住</span><br><span>房价： <price>'+hotels[hotel]["lowest price"]+'</price><i>起</i></span><br><span></i> 评分： <strong><rank>'+hotels[hotel]["rank"]+'</rank>/5</strong></span></div></div></a>')
+                        $("#hotels>").append('<a href="/hotels.php?'+hotel+`" class="package list-group-item" data-library-name="bootstrap" target="_blank" "><div class="row"><div class="col-md-3"><h4 class="package-name">`+hotel+'</h4><br /><img src="'+hotels[hotel]["picture"]+'" width="81px" height="81px" /></div><div class="col-md-9 hidden-xs><p class="package-description"><pr>'+hotels[hotel]["province"]+'</pr> <city>'+hotels[hotel]["city"]+'</city>  '+hotels[hotel]["location"]+'</p><span> <hot>'+hotels[hotel]["amount"]+'</hot>名用户曾经入住</span><br><span>房价： <price>'+hotels[hotel]["lowest price"]+'</price><i>起</i></span><br><span></i> 评分： <strong><rank>'+hotels[hotel]["rank"]+'</rank>/5</strong></span></div></div></a>')
                     }
                 };
                 options.url="search.txt"
@@ -154,34 +163,65 @@
                 return false;
             });
 
+
+            function reverseUpdown(sortKey) {
+                if(sortKey=="price"){
+                    if(priceupdown=="up")
+                            priceupdown="down";
+                    else if(priceupdown=="down")
+                            priceupdown="up";
+                    $($("#"+sortKey).next()).attr("src","img/"+priceupdown+".png");
+                }
+                else if(sortKey=="hot"){
+                    if(hotupdown=="up")
+                        hotupdown="down";
+                    else if(hotupdown=="down")
+                        hotupdown="up";
+                    $($("#"+sortKey).next()).attr("src","img/"+hotupdown+".png");
+                }
+                else if(sortKey=="rank"){
+                    if(rankupdown=="up")
+                        rannupdown="down";
+                    else if(rankupdown=="down")
+                        rankupdown="up";
+                    $($("#"+sortKey).next()).attr("src","img/"+rankupdown+".png");
+                }
+            }
+
             $("#price").click(function(){
                 a=$("#hotels>div>a");
                 pa=$("#hotels>div");
                 a.remove();
-                a.sort(gsort("price"))
-                 for(var i=0;i<a.length;i++){
-                    pa.append(a[i])
-                }
+                a.sort(gsort("price",priceupdown));
+                reverseUpdown("price");
+                 for(var i=0;i<a.length;i++) {
+                     pa.append(a[i]);
+                 }
+                return false;
             });
 
          $("#hot").click(function(){
                 a=$("#hotels>div>a");
                 pa=$("#hotels>div");
                 a.remove();
-                a.sort(gsort("hot"))
+                a.sort(gsort("hot",hotupdown));
+                reverseUpdown("hot");//改变图像的显示
                 for(var i=0;i<a.length;i++){
                     pa.append(a[i])
                 }
+             return false;
             });
 
             $("#rank").click(function(){
                 a=$("#hotels>div>a");
                 pa=$("#hotels>div");
                 a.remove();
-                a.sort(gsort("rank"))
+                a.sort(gsort("rank",rankupdown));
+                reverseUpdown("rank");
                 for(var i=0;i<a.length;i++){
-                    pa.append(a[i])
+                    pa.append(a[i]);
                 }
+                return false;
             });
 
             $('[name=price]').click(function(){
@@ -234,7 +274,7 @@
         }
     });
 
-            $('[name=]')
+            $("#search").submit();
     });
 
         
@@ -245,14 +285,17 @@
             };
         }
     
-            function gsort(key){//生成排序函数的闭包
+            function gsort(key,updaown){//生成排序函数的闭包
                 return function(a,b){
                     var x=parseInt($(a).find(key).text());
                     var y=parseInt($(b).find(key).text());
                     if(x===y){
                         return 0;
                     }
-                    return x<y? -1:1;
+                    if(updaown=="up")
+                        return x<y? -1:1;
+                    else(updaown=="down")
+                        return x<y? 1:-1;
                 }
             };
         
