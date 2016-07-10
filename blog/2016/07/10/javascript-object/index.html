@@ -1,24 +1,96 @@
-<?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[SeekTruth]]></title>
-  <link href="/atom.xml" rel="self"/>
-  <link href="/"/>
-  <updated>2016-07-10T12:30:13-04:00</updated>
-  <id>/</id>
-  <author>
-    <name><![CDATA[SeekTruth]]></name>
-    <email><![CDATA[seektruthalone@163.com]]></email>
-  </author>
-  <generator uri="http://octopress.org/">Octopress</generator>
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>JavaScript的对象与继承 - SeekTruth</title>
+  <meta name="author" content="SeekTruth">
 
   
-  <entry>
-    <title type="html"><![CDATA[JavaScript的对象与继承]]></title>
-    <link href="/blog/2016/07/10/javascript-object/"/>
-    <updated>2016-07-10T12:20:03-04:00</updated>
-    <id>/blog/2016/07/10/javascript-object</id>
-    <content type="html"><![CDATA[<p>JavaScript是我在C语言之后接触的第二门编程语言，大一暑假的时候在图书馆找了一本中国人写的<a href="https://www.amazon.cn/%E6%99%AE%E9%80%9A%E9%AB%98%E7%AD%89%E5%AD%A6%E6%A0%A1%E8%AE%A1%E7%AE%97%E6%9C%BA%E6%95%99%E8%82%B2-%E8%A7%84%E5%88%92%E6%95%99%E6%9D%90-JavaScript%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/dp/B00L8KB5OQ/ref=sr_1_fkmr0_1?ie=UTF8&amp;qid=1468070774&amp;sr=8-1-fkmr0&amp;keywords=javascript++%E7%8E%8B%E5%B0%8F%E7%A7%91%E5%AD%A6">JavaScript</a>程序设计来看。那个时候在编程方面几乎还是小白，再加上那本书根本没有提JavaScript的编程机制，又有一些误导性的话，一直以来对JavaScript有很深的误解，认为JavaScript只是一门在浏览器上运行的面向对象语言，值此文来写下JavaScript当中很具有迷惑性和容易误解的地方。当然限于作者水平有限，也没有什么开发经验，所以难免有疏漏之处，还望批评指正。</p>
+  <meta name="description" content="JavaScript是我在C语言之后接触的第二门编程语言，大一暑假的时候在图书馆找了一本中国人写的JavaScript程序设计来看。那个时候在编程方面几乎还是小白，再加上那本书根本没有提JavaScript的编程机制，又有一些误导性的话，一直以来对JavaScript有很深的误解， &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="/blog/2016/07/10/javascript-object/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="SeekTruth" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//cdn.bootcss.com/jquery/1.12.4/jquery.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">SeekTruth</a></h1>
+  
+    <h2>吾爱吾师，吾更爱真理</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://cn.bing.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">首页</a></li>
+  <li><a href="/blog/archives">全部文章</a></li>
+  <li><a href="/">技术</a></li>
+  <li><a href="/">人文历史</a></li>
+  <li><a href="/">娱乐</a></li>
+  <li><a href="/">随笔</a></li>
+  <li><a href="/recent-plan/">最近学习计划</a></li>
+  <li><a href="/about/">关于</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">JavaScript的对象与继承</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2016-07-10T12:20:03-04:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>10</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>12:20 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>JavaScript是我在C语言之后接触的第二门编程语言，大一暑假的时候在图书馆找了一本中国人写的<a href="https://www.amazon.cn/%E6%99%AE%E9%80%9A%E9%AB%98%E7%AD%89%E5%AD%A6%E6%A0%A1%E8%AE%A1%E7%AE%97%E6%9C%BA%E6%95%99%E8%82%B2-%E8%A7%84%E5%88%92%E6%95%99%E6%9D%90-JavaScript%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/dp/B00L8KB5OQ/ref=sr_1_fkmr0_1?ie=UTF8&amp;qid=1468070774&amp;sr=8-1-fkmr0&amp;keywords=javascript++%E7%8E%8B%E5%B0%8F%E7%A7%91%E5%AD%A6">JavaScript</a>程序设计来看。那个时候在编程方面几乎还是小白，再加上那本书根本没有提JavaScript的编程机制，又有一些误导性的话，一直以来对JavaScript有很深的误解，认为JavaScript只是一门在浏览器上运行的面向对象语言，值此文来写下JavaScript当中很具有迷惑性和容易误解的地方。当然限于作者水平有限，也没有什么开发经验，所以难免有疏漏之处，还望批评指正。</p>
 
 <h2>JavaScript的对象</h2>
 
@@ -237,69 +309,95 @@
 <h2>总结</h2>
 
 <p>JavaScript作为一门基于原型的，函数式的编程语言在设计上有很多优雅与强大之处，但同时又有很多糟粕和坑，正式如此，JavaScript也是被误解最多语言。学习了JavaScript的对象继承机制，感觉自己的水平还是大有长进的。</p>
-]]></content>
-  </entry>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
   
-  <entry>
-    <title type="html"><![CDATA[第二篇第一篇博文]]></title>
-    <link href="/blog/2016/07/10/first/"/>
-    <updated>2016-07-10T11:50:32-04:00</updated>
-    <id>/blog/2016/07/10/first</id>
-    <content type="html"><![CDATA[<p><br></p>
 
-<ul>
-<li>作者：seektruth</li>
-<li>微博：@seektruth</li>
-<li>原文链接：</li>
-</ul>
+<span class="byline author vcard">Posted by <span class="fn">SeekTruth</span></span>
+
+      
 
 
-<p>上次弄这个博客网站已经是两个月前了，上次这个“第一篇博文”这篇文章写了之后就两个月没有再弄过这个网站。
-这两个月自己还是不断陷入几个怪圈当中</p>
-
-<h2>拖延</h2>
-
-<p>总是喜欢把事情推到明天</p>
-
-<h2>选择恐惧症</h2>
-
-<ol>
-<li>觉得技术A有点意思，需要搞一搞，做了一小半</li>
-<li>觉得事情B也不错，放下事情A，搞事情B</li>
-<li>觉得事情C也很有必要要搞一搞</li>
-<li>结果A，B，C一样也没有搞定</li>
-<li>陷入深深的自责，甚至开始怀疑人生</li>
-<li>打游戏</li>
-<li>觉得不能再怎么颓废下去，回到步骤A</li>
-</ol>
 
 
-<!--more-->
+<time class='entry-date' datetime='2016-07-10T12:20:03-04:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>10</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>12:20 pm</span></time>
+      
 
-
-<h2>无法持续作为</h2>
-
-<p>作为两三天之后总是会松懈，什么都不想干，或者去打游戏，或者就是坐在那里发呆，或者就是撸来撸去。就是无法持续的集中精力干一件事情。、</p>
-
-<p>过去两个月，似乎自己总是很忙，好像干了很多事情，但又好像并没有收获，为了打破这种已经持续了两年的怪圈，我决定</p>
-
-<ol>
-<li>每天早上刷一道leetcode题，找到状态之后再学习</li>
-<li>拒绝拖延，每天维护自己的博客/Wiki</li>
-<li>集中精力，一段时间内只学习1到两门技术</li>
-<li>早睡早起，戒撸，控制打游戏的时间</li>
-</ol>
-
-
-<p>最后还是希望自己能够坚持下去每天更新这个站</p>
-
-<ul>
-<li>作者：seektruth</li>
-<li>微博：@seektruth</li>
-<li>原文链接：</li>
-</ul>
-
-]]></content>
-  </entry>
+<span class="categories">
   
-</feed>
+    <a class='category' href='/blog/categories/javascript/'>javascript</a>, <a class='category' href='/blog/categories/ji-zhu/'>技术</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2016/07/10/first/" title="Previous Post: 第二篇第一篇博文">&laquo; 第二篇第一篇博文</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>最近添加</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2016/07/10/javascript-object/">JavaScript的对象与继承</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/07/10/first/">第二篇第一篇博文</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2016 - SeekTruth -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

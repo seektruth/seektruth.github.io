@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
-<loc>/blog/2016/05/02/first-blog/</loc>
-<lastmod>2016-05-02T19:08:27-04:00</lastmod>
+<loc>/blog/2016/07/10/javascript-object/</loc>
+<lastmod>2016-07-10T12:20:03-04:00</lastmod>
+</url>
+<url>
+<loc>/blog/2016/07/10/first/</loc>
+<lastmod>2016-07-10T11:50:32-04:00</lastmod>
 </url>
 <url>
 <loc>/blog/archives/</loc>
@@ -12,5 +16,14 @@
 </url>
 <url>
 <loc>/about/</loc>
+</url>
+<url>
+<loc>/recent-plan/</loc>
+</url>
+<url>
+<loc>/blog/categories/ji-zhu/</loc>
+</url>
+<url>
+<loc>/blog/categories/javascript/</loc>
 </url>
 </urlset>
