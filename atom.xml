@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[SeekTruth]]></title>
-  <link href="/atom.xml" rel="self"/>
-  <link href="/"/>
-  <updated>2016-07-10T12:30:13-04:00</updated>
-  <id>/</id>
+  <link href="seektruth.github.io/atom.xml" rel="self"/>
+  <link href="seektruth.github.io/"/>
+  <updated>2016-07-11T11:38:18-04:00</updated>
+  <id>seektruth.github.io/</id>
   <author>
     <name><![CDATA[SeekTruth]]></name>
     <email><![CDATA[seektruthalone@163.com]]></email>
@@ -14,11 +14,239 @@
 
   
   <entry>
+    <title type="html"><![CDATA[空之境界]]></title>
+    <link href="seektruth.github.io/blog/2016/07/11/shiki/"/>
+    <updated>2016-07-11T10:05:39-04:00</updated>
+    <id>seektruth.github.io/blog/2016/07/11/shiki</id>
+    <content type="html"><![CDATA[<p><img src="seektruth.github.io/images/ryougi_shiki-001.jpg" alt="shiki" /></p>
+
+<p>断断续续一个学期，总算是把空之境界的剧场版给看完了，算起来已经是第三次看这个片了，前几次都没有怎么看懂。第一次大概是在高中的时候，看了第一章俯瞰风景，因为真个片不是顺序，而完全是乱序的，所以当时完全看不懂，于是就放弃了。</p>
+
+<!--more-->
+
+
+<p>第二次大概是在高三的时候吧，那个时候出了个新剪辑的TV版，是顺叙的，这一次坚持看完了，但因为TV版少了某些章节，所以也并没有很看懂。</p>
+
+<p>从大二下开学开始，再度开始看，直到考试周的时候，终于把空之境界看完了。尽管说看的过程当中，有些地方也是很痛苦，比如矛盾螺旋那一章，完全采用碎片化的叙述方式。但看完之后确实觉得很值得回味，还有式姐简直是美如画啊。空境确实算是一部很不错的动漫，比高达seed这类满是套路而且毒性很大的偶像剧要好。</p>
+
+<p>最后再来一张美如画的式姐</p>
+
+<p><img src="seektruth.github.io/images/012.jpg" alt="shiki" /></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Leetcode题4]]></title>
+    <link href="seektruth.github.io/blog/2016/07/11/leetcode4/"/>
+    <updated>2016-07-11T09:49:54-04:00</updated>
+    <id>seektruth.github.io/blog/2016/07/11/leetcode4</id>
+    <content type="html"><![CDATA[<h2>问题表述</h2>
+
+<p>题目意思很简单，就是寻找两个已经排序好的数组的中位数</p>
+
+<p>There are two sorted arrays nums1 and nums2 of size m and n respectively.</p>
+
+<p>Find the median of the two sorted arrays. The overall run time complexity should be O(log (m+n)).</p>
+
+<p>Example 1:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>nums1 = [1, 3]
+</span><span class='line'>nums2 = [2]
+</span><span class='line'>
+</span><span class='line'>The median is 2.0</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Example 2:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>nums1 = [1, 2]
+</span><span class='line'>nums2 = [3, 4]
+</span><span class='line'>
+</span><span class='line'>The median is (2 + 3)/2 = 2.5</span></code></pre></td></tr></table></div></figure>
+
+
+<!--more-->
+
+
+<h2>求解思路</h2>
+
+<p>简单来看，只需要把两个数组归并一下就可以，尽管没有满足题目当中的算法复杂度的要求，但还是一次通过了</p>
+
+<h2>Java代码</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='Java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Solution</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">double</span> <span class="nf">findMedianSortedArrays</span><span class="o">(</span><span class="kt">int</span><span class="o">[]</span> <span class="n">nums1</span><span class="o">,</span> <span class="kt">int</span><span class="o">[]</span> <span class="n">nums2</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="kt">int</span><span class="o">[]</span> <span class="n">sorted</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">int</span><span class="o">[</span><span class="n">nums1</span><span class="o">.</span><span class="na">length</span> <span class="o">+</span> <span class="n">nums2</span><span class="o">.</span><span class="na">length</span><span class="o">];</span>
+</span><span class='line'>        <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">,</span> <span class="n">k</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+</span><span class='line'>        <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">t</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">t</span> <span class="o">&lt;</span> <span class="n">nums1</span><span class="o">.</span><span class="na">length</span> <span class="o">+</span> <span class="n">nums2</span><span class="o">.</span><span class="na">length</span><span class="o">;</span> <span class="n">t</span><span class="o">++){</span>
+</span><span class='line'>            <span class="n">sorted</span><span class="o">[</span><span class="n">t</span><span class="o">]</span> <span class="o">=</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">nums1</span><span class="o">.</span><span class="na">length</span> <span class="o">?</span> <span class="o">(</span><span class="n">k</span> <span class="o">&lt;</span> <span class="n">nums2</span><span class="o">.</span><span class="na">length</span><span class="o">?</span>
+</span><span class='line'>                    <span class="o">(</span><span class="n">nums1</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">&lt;=</span> <span class="n">nums2</span><span class="o">[</span><span class="n">k</span><span class="o">]?</span> <span class="n">nums1</span><span class="o">[</span><span class="n">i</span><span class="o">++]</span> <span class="o">:</span> <span class="n">nums2</span><span class="o">[</span><span class="n">k</span><span class="o">++])</span> <span class="o">:</span> <span class="n">nums1</span><span class="o">[</span><span class="n">i</span><span class="o">++])</span> <span class="o">:</span> <span class="n">nums2</span><span class="o">[</span><span class="n">k</span><span class="o">++];</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">sorted</span><span class="o">.</span><span class="na">length</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">?</span> <span class="o">(</span><span class="n">sorted</span><span class="o">[</span><span class="n">sorted</span><span class="o">.</span><span class="na">length</span><span class="o">/</span><span class="mi">2</span><span class="o">-</span><span class="mi">1</span><span class="o">]</span> <span class="o">+</span> <span class="n">sorted</span><span class="o">[</span><span class="n">sorted</span><span class="o">.</span><span class="na">length</span><span class="o">/</span><span class="mi">2</span><span class="o">])/</span><span class="mf">2.0</span>
+</span><span class='line'>                <span class="o">:</span> <span class="n">sorted</span><span class="o">[</span><span class="n">sorted</span><span class="o">.</span><span class="na">length</span><span class="o">/</span><span class="mi">2</span><span class="o">];</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Leetcode题3]]></title>
+    <link href="seektruth.github.io/blog/2016/07/11/leetcode3/"/>
+    <updated>2016-07-11T09:42:41-04:00</updated>
+    <id>seektruth.github.io/blog/2016/07/11/leetcode3</id>
+    <content type="html"><![CDATA[<p>在第二篇第一篇博文当中已经说过，决定每天早上刷leetcode来保持状态，今天是leetcode的第三题</p>
+
+<h2>问题表述</h2>
+
+<p>题目意思比较简单，就是寻找不包含重复字符的最长子字符串</p>
+
+<p>Given a string, find the length of the longest substring without repeating characters.</p>
+
+<p>Examples:</p>
+
+<p>Given &ldquo;abcabcbb&rdquo;, the answer is &ldquo;abc&rdquo;, which the length is 3.</p>
+
+<p>Given &ldquo;bbbbb&rdquo;, the answer is &ldquo;b&rdquo;, with the length of 1.</p>
+
+<p>Given &ldquo;pwwkew&rdquo;, the answer is &ldquo;wke&rdquo;, with the length of 3. Note that the answer must be a substring, &ldquo;pwke&rdquo; is a subsequence and not a substring.</p>
+
+<p>Subscribe to see which companies asked this question</p>
+
+<!--more-->
+
+
+<h2>求解思路</h2>
+
+<p>粗看这题并不难，最开始的想法是使用分而治之策略，但是细细思考之后，这个问题分是很容易的，但是合并却不是很容易，于是放弃了这种想法。</p>
+
+<p>第二种想法是动态规划，看起来也确实是可行的，我最初也是用动态规划来实现的，但是在测试之后却发现有些测试用例有问题，调试了一下才发现动态规划的递推关系并没有我想象当中的简单,典型的就是没有想好就开始写程序，结果做了很多无用功。</p>
+
+<p>最后我发现其实只要从左到右把字符串扫描一遍就可以找到结果。我们维护两个字符串，一个是当前最大的字符串，一个是当前的字符串，最初的时候这两个字符串都为空。每扫面一个字符，如果这个字符不在字符串当中，我们就把当前字符串加上这个字符。如果在，当前字符串就不能再往前加字符了，我们需要比较当前字符串和当前最大字符串。为了满足子字符串不能有重复元素的要求，我们需要把当前字符串的开始地址替换掉。如此扫面一遍，就能够得出结果。</p>
+
+<h2>Java代码</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class='Java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Solution</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">int</span> <span class="nf">lengthOfLongestSubstring</span><span class="o">(</span><span class="n">String</span> <span class="n">s</span><span class="o">){</span>
+</span><span class='line'>        <span class="kt">int</span> <span class="n">start</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+</span><span class='line'>        <span class="n">String</span> <span class="n">max</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="o">;</span>
+</span><span class='line'>        <span class="n">String</span> <span class="n">current</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="o">;</span>
+</span><span class='line'>        <span class="kt">int</span> <span class="n">pos</span><span class="o">;</span>
+</span><span class='line'>        <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">s</span><span class="o">.</span><span class="na">length</span><span class="o">();</span><span class="n">i</span><span class="o">++){</span>
+</span><span class='line'>            <span class="k">if</span><span class="o">(</span><span class="n">current</span><span class="o">.</span><span class="na">indexOf</span><span class="o">(</span><span class="n">s</span><span class="o">.</span><span class="na">charAt</span><span class="o">(</span><span class="n">i</span><span class="o">))</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="o">){</span>
+</span><span class='line'>                <span class="k">if</span><span class="o">(</span><span class="n">current</span><span class="o">.</span><span class="na">length</span><span class="o">()</span> <span class="o">&gt;=</span> <span class="n">max</span><span class="o">.</span><span class="na">length</span><span class="o">()){</span>
+</span><span class='line'>                    <span class="n">max</span> <span class="o">=</span> <span class="n">current</span><span class="o">;</span>
+</span><span class='line'>                <span class="o">}</span>
+</span><span class='line'>                <span class="n">pos</span> <span class="o">=</span> <span class="n">current</span><span class="o">.</span><span class="na">indexOf</span><span class="o">(</span><span class="n">s</span><span class="o">.</span><span class="na">charAt</span><span class="o">(</span><span class="n">i</span><span class="o">));</span>
+</span><span class='line'>                <span class="n">current</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="na">substring</span><span class="o">(</span><span class="n">start</span> <span class="o">+</span> <span class="n">current</span><span class="o">.</span><span class="na">indexOf</span><span class="o">(</span><span class="n">s</span><span class="o">.</span><span class="na">charAt</span><span class="o">(</span><span class="n">i</span><span class="o">))+</span><span class="mi">1</span><span class="o">,</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="o">);</span>
+</span><span class='line'>                <span class="n">start</span> <span class="o">=</span> <span class="n">start</span> <span class="o">+</span> <span class="n">pos</span> <span class="o">+</span> <span class="mi">1</span><span class="o">;</span>
+</span><span class='line'>            <span class="o">}</span>
+</span><span class='line'>            <span class="k">else</span><span class="o">{</span>
+</span><span class='line'>                <span class="n">current</span> <span class="o">=</span> <span class="n">current</span> <span class="o">+</span> <span class="n">s</span><span class="o">.</span><span class="na">charAt</span><span class="o">(</span><span class="n">i</span><span class="o">);</span>
+</span><span class='line'>            <span class="o">}</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">max</span><span class="o">.</span><span class="na">length</span><span class="o">()</span> <span class="o">&gt;</span> <span class="n">current</span><span class="o">.</span><span class="na">length</span><span class="o">()?</span> <span class="n">max</span><span class="o">.</span><span class="na">length</span><span class="o">()</span> <span class="o">:</span> <span class="n">current</span><span class="o">.</span><span class="na">length</span><span class="o">();</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[大二下总结]]></title>
+    <link href="seektruth.github.io/blog/2016/07/11/2016-spring-summer/"/>
+    <updated>2016-07-11T09:37:42-04:00</updated>
+    <id>seektruth.github.io/blog/2016/07/11/2016-spring-summer</id>
+    <content type="html"><![CDATA[<h2>总览</h2>
+
+<p>总的来说，尽管还是有很多后悔和不足的地方，这个学期自己还是有很大的进步。因为寒假的时候颓废了一个月，这个学期刚开始的时候还是基本处于小白的阶段。经过一学期的学习，虽然对各个技术栈都没有达到比较熟悉的程度，但还是对整个行业的技术体系有了大致的概览，对自己将要走的路有了更清晰的认识。</p>
+
+<h2>习惯</h2>
+
+<p>非常不幸的是，这个学期并没有改正以前的一些坏习惯：</p>
+
+<ol>
+<li>作息不规律</li>
+<li>撸</li>
+<li>打游戏</li>
+</ol>
+
+
+<p>也并没有养成什么心得好习惯，很多事情也只是尝试了几天就放弃了：</p>
+
+<ol>
+<li>记日记</li>
+<li>学英语</li>
+<li>阅读</li>
+</ol>
+
+
+<!--more-->
+
+
+<h2>阅读</h2>
+
+<p>因为课程比较紧张，这个学期大概只完整读完了[HTTP权威指南]和[JavaScript语言精粹]两本书，HTTP权威指南还读的不是很认真，非技术类的书籍只读了[人类群星闪耀时]的一章，真是汗颜。</p>
+
+<h2>编程</h2>
+
+<p>这学期主要写了图书管理系统、远途网和miniSQL三个大程，图书管理系统我边自学node.js边写的，写的非常烂，只是熟悉了网站前后端基本原理和编程套路，倒也还算是大有收获。第二个远途网也是关于网站制作的，这一次因为是20人合作，所以语言用的是PHP，写的其实比较烂，但是跟第一次相比已经大大有提高，这一次继续熟悉网站架设的套路和前端的界面设计。miniSQL个人目前写的代码量最大的程序（超过1000行），其实写的也很烂，只是练习了较大型系统的架构。</p>
+
+<h2>收获</h2>
+
+<p>这个学期最大的收获还是快速学习能力，自己能够明显的感觉到自己学习新技术比以前更快了。也难怪这一学期都是在快速学习以应付各种事情，虽然这个学期自己看的书并没有上个学期多，但还是明显的感觉到自己这个学期的成长要比上个学期要多。</p>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[JavaScript的对象与继承]]></title>
-    <link href="/blog/2016/07/10/javascript-object/"/>
+    <link href="seektruth.github.io/blog/2016/07/10/javascript-object/"/>
     <updated>2016-07-10T12:20:03-04:00</updated>
-    <id>/blog/2016/07/10/javascript-object</id>
-    <content type="html"><![CDATA[<p>JavaScript是我在C语言之后接触的第二门编程语言，大一暑假的时候在图书馆找了一本中国人写的<a href="https://www.amazon.cn/%E6%99%AE%E9%80%9A%E9%AB%98%E7%AD%89%E5%AD%A6%E6%A0%A1%E8%AE%A1%E7%AE%97%E6%9C%BA%E6%95%99%E8%82%B2-%E8%A7%84%E5%88%92%E6%95%99%E6%9D%90-JavaScript%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/dp/B00L8KB5OQ/ref=sr_1_fkmr0_1?ie=UTF8&amp;qid=1468070774&amp;sr=8-1-fkmr0&amp;keywords=javascript++%E7%8E%8B%E5%B0%8F%E7%A7%91%E5%AD%A6">JavaScript</a>程序设计来看。那个时候在编程方面几乎还是小白，再加上那本书根本没有提JavaScript的编程机制，又有一些误导性的话，一直以来对JavaScript有很深的误解，认为JavaScript只是一门在浏览器上运行的面向对象语言，值此文来写下JavaScript当中很具有迷惑性和容易误解的地方。当然限于作者水平有限，也没有什么开发经验，所以难免有疏漏之处，还望批评指正。</p>
+    <id>seektruth.github.io/blog/2016/07/10/javascript-object</id>
+    <content type="html"><![CDATA[<p>JavaScript是我在C语言之后接触的第二门编程语言，大一暑假的时候在图书馆找了一本中国人写的<a href="https://www.amazon.cn/%E6%99%AE%E9%80%9A%E9%AB%98%E7%AD%89%E5%AD%A6%E6%A0%A1%E8%AE%A1%E7%AE%97%E6%9C%BA%E6%95%99%E8%82%B2-%E8%A7%84%E5%88%92%E6%95%99%E6%9D%90-JavaScript%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/dp/B00L8KB5OQ/ref=sr_1_fkmr0_1?ie=UTF8&amp;qid=1468070774&amp;sr=8-1-fkmr0&amp;keywords=javascript++%E7%8E%8B%E5%B0%8F%E7%A7%91%E5%AD%A6">JavaScript程序设计</a>来看。那个时候在编程方面几乎还是小白，再加上那本书根本没有提JavaScript的编程机制，又有一些误导性的话，一直以来对JavaScript有很深的误解，认为JavaScript只是一门在浏览器上运行的面向对象语言，值此文来写下JavaScript当中很具有迷惑性和容易误解的地方。当然限于作者水平有限，也没有什么开发经验，所以难免有疏漏之处，还望批评指正。</p>
 
 <h2>JavaScript的对象</h2>
 
@@ -242,19 +470,10 @@
   
   <entry>
     <title type="html"><![CDATA[第二篇第一篇博文]]></title>
-    <link href="/blog/2016/07/10/first/"/>
+    <link href="seektruth.github.io/blog/2016/07/10/first/"/>
     <updated>2016-07-10T11:50:32-04:00</updated>
-    <id>/blog/2016/07/10/first</id>
-    <content type="html"><![CDATA[<p><br></p>
-
-<ul>
-<li>作者：seektruth</li>
-<li>微博：@seektruth</li>
-<li>原文链接：</li>
-</ul>
-
-
-<p>上次弄这个博客网站已经是两个月前了，上次这个“第一篇博文”这篇文章写了之后就两个月没有再弄过这个网站。
+    <id>seektruth.github.io/blog/2016/07/10/first</id>
+    <content type="html"><![CDATA[<p>上次弄这个博客网站已经是两个月前了，上次这个“第一篇博文”这篇文章写了之后就两个月没有再弄过这个网站。
 这两个月自己还是不断陷入几个怪圈当中</p>
 
 <h2>拖延</h2>
@@ -292,13 +511,6 @@
 
 
 <p>最后还是希望自己能够坚持下去每天更新这个站</p>
-
-<ul>
-<li>作者：seektruth</li>
-<li>微博：@seektruth</li>
-<li>原文链接：</li>
-</ul>
-
 ]]></content>
   </entry>
   
