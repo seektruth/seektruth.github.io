@@ -9,9 +9,8 @@
   <meta name="author" content="SeekTruth">
 
   
-  <meta name="description" content="参考地址 http://seektruth.github.io/blog/2016/10/28/web/ 准备 一个好用的浏览器 chrome/Firefox
-PHP开发环境 推荐XAMPP
-好用的编辑器 Atom/sublime/VScode/PHPstorm ">
+  <meta name="description" content="这是操作系统原理上一道同步互斥的实验题，在此写下求解过程。如果不熟悉Linux下的多线程变成，建议先看
+这三篇文章 问题描述 1.有两条道路双向两个车道，即每条路每个方向只有一个车道，两条道路十字交叉。假设车辆只能向前直行，而不允许转弯和后退。如果有4辆车几乎同时到达这个十字路口，如图（a）所示； &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -80,7 +79,7 @@ PHP开发环境 推荐XAMPP
 
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2016/10/28/web/">浅谈web开发</a></h1>
+      <h1 class="entry-title"><a href="/blog/2016/11/09/car-problem/">开车问题</a></h1>
     
     
       <p class="meta">
@@ -89,7 +88,7 @@ PHP开发环境 推荐XAMPP
 
 
 
-<time class='entry-date' datetime='2016-10-28T21:58:48+08:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>28</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>9:58 pm</span></time>
+<time class='entry-date' datetime='2016-11-09T12:45:27+08:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>9</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>12:45 pm</span></time>
         
       </p>
     
@@ -99,27 +98,48 @@ PHP开发环境 推荐XAMPP
 作者： seektruth<br>
 微博： <a href="http://weibo.com/5674308204/profile?cfs=&Pl_Official_MyPopularity__20_filter=2&is_all=1#_0">@seektruthalone</a><br>
 
-  原文链接： <a href="http://seektruth.github.io/blog/2016/10/28/web/">http://seektruth.github.io/blog/2016/10/28/web/</a><br>
+  原文链接： <a href="http://seektruth.github.io/blog/2016/11/09/car-problem/">http://seektruth.github.io/blog/2016/11/09/car-problem/</a><br>
 
 <br>
 
 
-  <div class="entry-content"><p>参考地址  <a href="http://seektruth.github.io/blog/2016/10/28/web/">http://seektruth.github.io/blog/2016/10/28/web/</a></p>
+  <div class="entry-content"><p>这是操作系统原理上一道同步互斥的实验题，在此写下求解过程。如果不熟悉Linux下的多线程变成，建议先看
+<a href="http://www.ibm.com/developerworks/cn/linux/thread/posix_thread3/index.html">这三篇文章</a></p>
 
-<h2>准备</h2>
+<h2>问题描述</h2>
+
+<p>1.有两条道路双向两个车道，即每条路每个方向只有一个车道，两条道路十字交叉。假设车辆只能向前直行，而不允许转弯和后退。如果有4辆车几乎同时到达这个十字路口，如图（a）所示；相互交叉地停下来，如图（b），此时4辆车都将不能继续向前，这是一个典型的死锁问题。从操作系统原理的资源分配观点，如果4辆车都想驶过十字路口，那么对资源的要求如下：</p>
 
 <ul>
-<li>一个好用的浏览器 chrome/Firefox</li>
-<li>PHP开发环境  推荐<a href="https://www.apachefriends.org/index.html">XAMPP</a></li>
-<li>好用的编辑器 Atom/sublime/VScode/PHPstorm</li>
+<li>向北行驶的车1需要象限a和b；</li>
+<li>向西行驶的车2需要象限b和c；</li>
+<li>向南行驶的车3需要象限c和d；</li>
+<li>向东行驶的车4需要象限d和a。</li>
 </ul>
 
+
+<p><img src="/images/car.jpg" alt="situation" /></p>
+
+<p>我们要实现十字路口交通的车辆同步问题，防止汽车在经过十字路口时产生死锁和饥饿。在我们的系统中，东西南北各个方向不断地有车辆经过十字路口（注意：不只有4辆），同一个方向的车辆依次排队通过十字路口。按照交通规则是右边车辆优先通行，如图(a)中，若只有car1、car2、car3，那么车辆通过十字路口的顺序是car3->car2->car1。车辆通行总的规则：</p>
+
+<ol>
+<li>来自同一个方向多个车辆到达十字路口时，车辆靠右行驶，依次顺序通过；</li>
+<li>有多个方向的车辆同时到达十字路口时，按照右边车辆优先通行规则，除非该车在十字路口等待时收到一个立即通行的信号；</li>
+<li>避免产生死锁；</li>
+<li>避免产生饥饿；</li>
+<li>任何一个线程（车辆）不得采用单点调度策略；</li>
+<li>由于使用AND型信号量机制会使线程（车辆）并发度降低且引起不公平（部分线程饥饿），本题不得使用AND型信号量机制，即在上图中车辆不能要求同时满足两个象限才能顺利通过，如南方车辆不能同时判断a和b是否有空。</li>
+<li>Linux下用C语言使用系统pthread库实现</li>
+</ol>
+
+
+<p>编写程序实现避免产生死锁和饥饿的车辆通过十字路口方案，并给出详细的设计方案，程序中要有详细的注释。</p>
 
 </div>
   
   
     <footer>
-      <a rel="full-article" href="/blog/2016/10/28/web/">Read on &rarr;</a>
+      <a rel="full-article" href="/blog/2016/11/09/car-problem/">Read on &rarr;</a>
     </footer>
   
 
@@ -318,7 +338,7 @@ PHP开发环境 推荐XAMPP
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/blog/2016/10/28/web/">浅谈web开发</a>
+        <a href="/blog/2016/11/09/car-problem/">开车问题</a>
       </li>
     
       <li class="post">

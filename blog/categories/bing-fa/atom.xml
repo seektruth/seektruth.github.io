@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Javascript | SeekTruth]]></title>
-  <link href="seektruth.github.io/blog/categories/javascript/atom.xml" rel="self"/>
+  <title><![CDATA[并发 | SeekTruth]]></title>
+  <link href="seektruth.github.io/blog/categories/bing-fa/atom.xml" rel="self"/>
   <link href="seektruth.github.io/"/>
   <updated>2016-11-09T15:23:18+08:00</updated>
   <id>seektruth.github.io/</id>

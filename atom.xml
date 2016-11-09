@@ -4,7 +4,7 @@
   <title><![CDATA[SeekTruth]]></title>
   <link href="seektruth.github.io/atom.xml" rel="self"/>
   <link href="seektruth.github.io/"/>
-  <updated>2016-10-28T22:49:01+08:00</updated>
+  <updated>2016-11-09T15:23:18+08:00</updated>
   <id>seektruth.github.io/</id>
   <author>
     <name><![CDATA[SeekTruth]]></name>
@@ -14,63 +14,198 @@
 
   
   <entry>
-    <title type="html"><![CDATA[浅谈web开发]]></title>
-    <link href="seektruth.github.io/blog/2016/10/28/web/"/>
-    <updated>2016-10-28T21:58:48+08:00</updated>
-    <id>seektruth.github.io/blog/2016/10/28/web</id>
-    <content type="html"><![CDATA[<p>参考地址  <a href="http://seektruth.github.io/blog/2016/10/28/web/">http://seektruth.github.io/blog/2016/10/28/web/</a></p>
+    <title type="html"><![CDATA[开车问题]]></title>
+    <link href="seektruth.github.io/blog/2016/11/09/car-problem/"/>
+    <updated>2016-11-09T12:45:27+08:00</updated>
+    <id>seektruth.github.io/blog/2016/11/09/car-problem</id>
+    <content type="html"><![CDATA[<p>这是操作系统原理上一道同步互斥的实验题，在此写下求解过程。如果不熟悉Linux下的多线程变成，建议先看
+<a href="http://www.ibm.com/developerworks/cn/linux/thread/posix_thread3/index.html">这三篇文章</a></p>
 
-<h2>准备</h2>
+<h2>问题描述</h2>
+
+<p>1.有两条道路双向两个车道，即每条路每个方向只有一个车道，两条道路十字交叉。假设车辆只能向前直行，而不允许转弯和后退。如果有4辆车几乎同时到达这个十字路口，如图（a）所示；相互交叉地停下来，如图（b），此时4辆车都将不能继续向前，这是一个典型的死锁问题。从操作系统原理的资源分配观点，如果4辆车都想驶过十字路口，那么对资源的要求如下：</p>
 
 <ul>
-<li>一个好用的浏览器 chrome/Firefox</li>
-<li>PHP开发环境  推荐<a href="https://www.apachefriends.org/index.html">XAMPP</a></li>
-<li>好用的编辑器 Atom/sublime/VScode/PHPstorm</li>
+<li>向北行驶的车1需要象限a和b；</li>
+<li>向西行驶的车2需要象限b和c；</li>
+<li>向南行驶的车3需要象限c和d；</li>
+<li>向东行驶的车4需要象限d和a。</li>
 </ul>
 
+
+<p><img src="seektruth.github.io/images/car.jpg" alt="situation" /></p>
+
+<p>我们要实现十字路口交通的车辆同步问题，防止汽车在经过十字路口时产生死锁和饥饿。在我们的系统中，东西南北各个方向不断地有车辆经过十字路口（注意：不只有4辆），同一个方向的车辆依次排队通过十字路口。按照交通规则是右边车辆优先通行，如图(a)中，若只有car1、car2、car3，那么车辆通过十字路口的顺序是car3->car2->car1。车辆通行总的规则：</p>
+
+<ol>
+<li>来自同一个方向多个车辆到达十字路口时，车辆靠右行驶，依次顺序通过；</li>
+<li>有多个方向的车辆同时到达十字路口时，按照右边车辆优先通行规则，除非该车在十字路口等待时收到一个立即通行的信号；</li>
+<li>避免产生死锁；</li>
+<li>避免产生饥饿；</li>
+<li>任何一个线程（车辆）不得采用单点调度策略；</li>
+<li>由于使用AND型信号量机制会使线程（车辆）并发度降低且引起不公平（部分线程饥饿），本题不得使用AND型信号量机制，即在上图中车辆不能要求同时满足两个象限才能顺利通过，如南方车辆不能同时判断a和b是否有空。</li>
+<li>Linux下用C语言使用系统pthread库实现</li>
+</ol>
+
+
+<p>编写程序实现避免产生死锁和饥饿的车辆通过十字路口方案，并给出详细的设计方案，程序中要有详细的注释。</p>
 
 <!--more-->
 
 
-<h2>参考资料推荐</h2>
+<h2>想当然的第一次尝试</h2>
 
-<p>PHP:</p>
+<p>问题的关键是互斥和同步，题目要求要在Linux环境下用C语言编程，能够选用的同步方案就比较有限了。最近刚看了七周七并发模型用条件变量来解决哲学家进餐问题，学习了C语言一些关于条件变量的一些API，于是也决定选择条件变量来进行同步。</p>
 
-<p> <a href="https://book.douban.com/subject/20445413/">PHP与MySQL动态网站开发</a></p>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='C'><span class='line'>  <span class="kt">pthread_cond_t</span> <span class="n">cond</span><span class="p">;</span><span class="c1">//声明条件变量</span>
+</span><span class='line'>  <span class="n">pthread_cond_wait</span><span class="p">(</span><span class="o">&amp;</span><span class="n">cond</span><span class="p">,</span><span class="o">&amp;</span><span class="n">road</span><span class="p">);</span><span class="c1">//等待条件，第二个参数是锁变量</span>
+</span><span class='line'>  <span class="n">pthread_cond_broadcast</span><span class="p">(</span><span class="o">&amp;</span><span class="n">cond</span><span class="p">);</span><span class="c1">//通知等待条件的线程</span>
+</span></code></pre></td></tr></table></div></figure>
 
-<p><img src="seektruth.github.io/images/php.jpg" alt="PHP" /></p>
 
-<p> <a href="https://segmentfault.com/a/1190000000390457">y分钟速成PHP</a></p>
+<p>首先是对于什么时候车辆能够通行的理解，题目当中说一个方向的能通行需要两个象限，还不能同时判断两个方向是否同时有空。如果如题目中所叙述直线考虑，对几个象限的加锁互斥势必会导致代码的逻辑比较复杂，处理不好还可能会产生死锁问题。但其实可以做一个近似等价的转换，当一个车的左右两个方向都没有车在同行，那么这个车就可以通行。（如果有疑问，可以想象一下一下实际的情况，若果左右任意一边有车辆通行，如果该方向也同行的话，就可能会撞车，如果两边都没有车通行，那么向前通行肯定是没有问题的），如此我们对于abcd四个象限的竞争可以转化为当前车辆对旁边两个方向运行状态的判断。</p>
 
-<p>Java:</p>
+<p>这样考虑，问题有点类似与哲学家进餐问题，把每个方向看成一个哲学家，车来了就相当于哲学家在进餐，当前方向没有车就相当于就是哲学家在思考。这样考虑，很简单就可以写完程序的第一个版本，一共有四个方向，我们需要四个线程，我们可以写四种不同的线程，但这并不是一个很好的办法，因为这四个线程当中有大量重复的代码，这样不太利于代码的维护，在创建线程时我们可以传入void*类型的参数，我们可以通过参数来区别不同的线程。每当每个方向的车来的时候，判断旁边的两个方向是否有车在运行，如果有，那么就进行等待（相当于哲学家的思考），如果没有，那么就通行（相当于哲学家的进餐）</p>
 
-<p> 编程语言： <a href="https://book.douban.com/subject/26880667/">Java核心技术卷一</a></p>
+<h2>改进</h2>
 
-<p><img src="seektruth.github.io/images/java.jpg" alt="java" /></p>
+<p>上面的想法有两个很大的问题，第一就是使用了单点调度，最开始的时候并没有注意到这个问题。题目中要求每个车必须是一个单独的线程，而不能使用一个线程来调度一个方向。要解决这个问题，我们需要为每个线程添加记录当前方向车辆的变量。每当一个车辆来的时候，我们为其创建一个线程，并把其线程号加入到当前方向的进场队列当中。</p>
 
-<p> JavaWeb： <a href="https://book.douban.com/subject/1942934/">Head first servlet and PHP</a></p>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='C'><span class='line'>   <span class="n">queue</span> <span class="n">eastQueue</span><span class="p">,</span><span class="n">southQueue</span><span class="p">,</span><span class="n">westQueue</span><span class="p">,</span><span class="n">northQueue</span><span class="p">;</span>
+</span><span class='line'>   <span class="p">...</span>
+</span><span class='line'>   <span class="k">case</span> <span class="sc">&#39;E&#39;</span><span class="o">:</span>
+</span><span class='line'>                <span class="p">...</span>
+</span><span class='line'>                <span class="n">pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">current</span><span class="p">,</span><span class="nb">NULL</span><span class="p">,</span><span class="n">carThread</span><span class="p">,(</span><span class="kt">void</span> <span class="err">\</span><span class="o">*</span><span class="p">)</span><span class="n">currentArg</span><span class="p">);</span>
+</span><span class='line'>                <span class="n">enqueue</span><span class="p">(</span><span class="o">&amp;</span><span class="n">eastQueue</span><span class="p">,</span><span class="n">current</span><span class="p">);</span>
+</span><span class='line'>                <span class="n">printf</span><span class="p">(</span><span class="s">&quot;car%d arrive in east</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="n">currentArg</span><span class="o">-&gt;</span><span class="n">carNumber</span><span class="p">);</span>
+</span><span class='line'>                <span class="n">pthread_mutex_unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="n">eastCar</span><span class="p">);</span>
+</span><span class='line'>                <span class="k">break</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
 
-<p><img src="seektruth.github.io/images/head.jpg" alt="head" /></p>
 
-<p> Spring框架： <a href="https://book.douban.com/subject/26767354/">Spring实战</a></p>
+<p>在创建线程时，需要先初始化线程的参数，线程参数的结构如下</p>
 
-<p><img src="seektruth.github.io/images/spring.jpg" alt="spring" /></p>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='C'><span class='line'><span class="k">typedef</span> <span class="k">struct</span> <span class="n">pthreadArgs</span><span class="p">{</span>
+</span><span class='line'>    <span class="kt">int</span> <span class="n">carNumber</span><span class="p">;</span><span class="c1">//当前车辆的代号</span>
+</span><span class='line'>    <span class="kt">pthread_t</span> <span class="n">front</span><span class="p">;</span><span class="c1">//前面的车辆</span>
+</span><span class='line'>    <span class="n">situation</span><span class="o">*</span> <span class="n">ben</span><span class="p">;</span><span class="c1">//本方向的情况</span>
+</span><span class='line'>    <span class="n">situation</span><span class="o">*</span> <span class="n">left</span><span class="p">;</span><span class="c1">//左面方向的情况</span>
+</span><span class='line'>    <span class="n">situation</span><span class="o">*</span> <span class="n">right</span><span class="p">;</span><span class="c1">//右面方向的情况</span>
+</span><span class='line'>    <span class="kt">char</span><span class="o">*</span> <span class="n">direction</span><span class="p">;</span><span class="c1">//当前方向的名字</span>
+</span><span class='line'><span class="p">}</span> <span class="n">pthreadArgs</span><span class="p">;</span><span class="c1">//初始线程的参数</span>
+</span></code></pre></td></tr></table></div></figure>
 
-<h2>10.29</h2>
 
-<h3>HTTP basics</h3>
+<p>其中situation是东南西北四个方向的路况，整个程序的中四个这样的全局变量，situation结构的定义如下：</p>
 
-<p>关键概念：</p>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='C'><span class='line'><span class="k">typedef</span> <span class="k">struct</span><span class="p">{</span>
+</span><span class='line'>  <span class="kt">int</span><span class="o">*</span> <span class="n">run</span><span class="p">;</span><span class="c1">//方向上是否有车辆在通行</span>
+</span><span class='line'>  <span class="n">queue</span> <span class="o">*</span> <span class="n">cars</span><span class="p">;</span><span class="c1">//车辆队列</span>
+</span><span class='line'>  <span class="kt">pthread_mutex_t</span><span class="o">*</span> <span class="n">queneLock</span><span class="p">;</span>
+</span><span class='line'>  <span class="kt">pthread_cond_t</span><span class="o">*</span> <span class="n">condition</span><span class="p">;</span>
+</span><span class='line'>  <span class="kt">int</span> <span class="n">green</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span> <span class="n">situation</span><span class="p">;</span><span class="c1">//各个方向路段的情况</span>
+</span></code></pre></td></tr></table></div></figure>
 
-<p>IP地址 端口 URL HTTP报文 <em>HTTP状态码</em></p>
 
-<p>HTTP方法： <em>get</em> <em>post</em></p>
+<p>当一个车来到路口时，它还需要判断它前面有有没有车，如果有车，要等待前面的车辆先行</p>
 
-<h3>PHP hello world &amp; PHP basic</h3>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='C'><span class='line'>  <span class="k">if</span><span class="p">(</span><span class="n">args</span><span class="o">-&gt;</span><span class="n">front</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span><span class="c1">//如果前面有车，那么等前面的车先走</span>
+</span><span class='line'>          <span class="n">pthread_join</span><span class="p">(</span><span class="n">args</span><span class="o">-&gt;</span><span class="n">front</span><span class="p">,</span><span class="nb">NULL</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
 
-<p>关键概念:</p>
 
-<p>Apache PHP 变量 数组 循环 控制 输入输出</p>
+<p>接下来和刚才一样，车辆判断左右是否有车同行，如果有，那么就进入等待条件的状态。</p>
+
+<p>以上虽然解决了单点调度的问题，但还有个问题就是题目的要求当中有一条，如果有多辆车同时到达路口，那么需要等待右方的车，一起如果四个方向都有车造成的死锁问题，同一个方向同时有很多车来的时候会造成的饥饿问题。</p>
+
+<p>为了解决问题</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='C'><span class='line'><span class="k">while</span><span class="p">(</span><span class="n">args</span><span class="o">-&gt;</span><span class="n">right</span><span class="o">-&gt;</span><span class="n">cars</span><span class="o">-&gt;</span><span class="n">carNum</span><span class="o">&gt;</span><span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">args</span><span class="o">-&gt;</span><span class="n">ben</span><span class="o">-&gt;</span><span class="n">green</span><span class="p">){</span><span class="c1">//</span>
+</span><span class='line'>        <span class="n">pthread_cond_wait</span><span class="p">(</span><span class="n">args</span><span class="o">-&gt;</span><span class="n">right</span><span class="o">-&gt;</span><span class="n">condition</span><span class="p">,</span><span class="o">&amp;</span><span class="n">road</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在判断左右两边无车之后，如果右方有车在等待并且当前方向的green变量为假，那么就会进入等待条件的状态。green是我为了解决饥饿所设置的一个状态变量。</p>
+
+<p>为了解决饥饿，车辆在通行之后会把左方路况的green值设为真，自己方向的green值设为假。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='C'><span class='line'><span class="p">...</span>
+</span><span class='line'><span class="o">*</span><span class="p">(</span><span class="n">args</span><span class="o">-&gt;</span><span class="n">ben</span><span class="o">-&gt;</span><span class="n">run</span><span class="p">)</span> <span class="o">=</span> <span class="n">FALSE</span><span class="p">;</span>
+</span><span class='line'> <span class="n">args</span><span class="o">-&gt;</span><span class="n">ben</span><span class="o">-&gt;</span><span class="n">green</span> <span class="o">=</span> <span class="n">FALSE</span><span class="p">;</span>
+</span><span class='line'><span class="p">...</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>最后为了解决四个方向车辆相互等待的情况，需要一个死锁检测线程，当发现四个方向方向的车辆相互等待时，它会通知一个方向先行。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='C'><span class='line'><span class="kt">void</span><span class="o">*</span> <span class="nf">deadLockThread</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span> <span class="n">what</span><span class="p">){</span>
+</span><span class='line'>    <span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">){</span>
+</span><span class='line'>        <span class="k">if</span><span class="p">(</span><span class="n">eastSituation</span><span class="p">.</span><span class="n">cars</span><span class="o">-&gt;</span><span class="n">carNum</span><span class="o">&gt;</span><span class="mi">0</span><span class="o">&amp;&amp;</span><span class="n">southSituation</span><span class="p">.</span><span class="n">cars</span><span class="o">-&gt;</span><span class="n">carNum</span><span class="o">&gt;</span><span class="mi">0</span><span class="o">&amp;&amp;</span>
+</span><span class='line'>                <span class="n">westSituation</span><span class="p">.</span><span class="n">cars</span><span class="o">-&gt;</span><span class="n">carNum</span><span class="o">&gt;</span><span class="mi">0</span><span class="o">&amp;&amp;</span><span class="n">northSituation</span><span class="p">.</span><span class="n">cars</span><span class="o">-&gt;</span><span class="n">carNum</span><span class="o">&gt;</span><span class="mi">0</span><span class="o">&amp;&amp;</span>
+</span><span class='line'>                <span class="o">!</span><span class="n">eastRun</span><span class="o">&amp;&amp;!</span><span class="n">southRun</span><span class="o">&amp;&amp;!</span><span class="n">westRun</span><span class="o">&amp;&amp;!</span><span class="n">northRun</span><span class="p">){</span><span class="c1">//if car jar found,then signal south cars to go first</span>
+</span><span class='line'>            <span class="n">printf</span><span class="p">(</span><span class="s">&quot;car jar found signal south to go first</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+</span><span class='line'>            <span class="n">southSituation</span><span class="p">.</span><span class="n">green</span> <span class="o">=</span> <span class="n">TRUE</span><span class="p">;</span>
+</span><span class='line'>            <span class="n">pthread_cond_broadcast</span><span class="p">(</span><span class="o">&amp;</span><span class="n">eastCond</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="n">usleep</span><span class="p">(</span><span class="mi">50000</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="n">pthread_exit</span><span class="p">(</span><span class="nb">NULL</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><a href="https://github.com/seektruth/ZJU-OS-car-scheduling">完整源代码</a></p>
 ]]></content>
   </entry>
   
