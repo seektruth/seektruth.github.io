@@ -1,4 +1,0 @@
-User-agent: *
-Disallow: 
-
-Sitemap: seektruth.github.io/sitemap.xml 

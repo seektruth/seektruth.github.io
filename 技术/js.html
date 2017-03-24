@@ -1,0 +1,169 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>JavaScript的对象与继承 - smile man的wiki</title>
+    <meta name="keywords" content=""/>
+    <meta name="description" content="smile man 的个人博客"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#技术">技术</a>&nbsp;&#187;&nbsp;JavaScript的对象与继承
+    <span class="updated">Updated&nbsp;
+      2017-02-19 19:15
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">JavaScript的对象与继承</div>
+
+  <p>JavaScript是我在C语言之后接触的第二门编程语言，大一暑假的时候在图书馆找了一本中国人写的<a href="https://www.amazon.cn/%E6%99%AE%E9%80%9A%E9%AB%98%E7%AD%89%E5%AD%A6%E6%A0%A1%E8%AE%A1%E7%AE%97%E6%9C%BA%E6%95%99%E8%82%B2-%E8%A7%84%E5%88%92%E6%95%99%E6%9D%90-JavaScript%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1/dp/B00L8KB5OQ/ref=sr_1_fkmr0_1?ie=UTF8&amp;qid=1468070774&amp;sr=8-1-fkmr0&amp;keywords=javascript++%E7%8E%8B%E5%B0%8F%E7%A7%91%E5%AD%A6">JavaScript程序设计</a>来看。那个时候在编程方面几乎还是小白，再加上那本书根本没有提JavaScript的编程机制，又有一些误导性的话，一直以来对JavaScript有很深的误解，认为JavaScript只是一门在浏览器上运行的面向对象语言，值此文来写下JavaScript当中很具有迷惑性和容易误解的地方。当然限于作者水平有限，也没有什么开发经验，所以难免有疏漏之处，还望批评指正。</p>
+<h2 id="javascript">JavaScript的对象</h2>
+<h3 id="_1">对象是什么</h3>
+<p>JavaScript代码当中随处可见new关键字，很容易让人产生误解，认为JavaScript是Java一样是基于类继承的语言。但是事实并非如此，JavaScript当中并没有类，那JavaScript的对象不是类那又是什么呢？某种意义上说，JavaScript的对象就是Python当中的字典（哈希表），其实也就是类似这样的键值对：</p>
+<div class="hlcode"><pre><span class="nx">me</span><span class="o">=</span><span class="p">{</span>
+    <span class="s2">&quot;fisrtName&quot;</span> <span class="o">:</span> <span class="s2">&quot;seek&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;lastName&quot;</span> <span class="o">:</span> <span class="s2">&quot;truth&quot;</span> <span class="p">,</span>
+    <span class="s2">&quot;getName&quot;</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(){</span>
+        <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">firstName</span><span class="o">+</span><span class="k">this</span><span class="p">.</span><span class="nx">lastName</span><span class="p">;</span> <span class="c1">//this相当于指向这个对象的指针</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>这是一个比较有误解性的地方，初次看到时候觉得有点无法理解，但仔细用一用还是觉得合理，我们既可以像Python一样用[]运算符来获取元素，也可以用.操作符来获取元素：</p>
+<div class="hlcode"><pre><span class="n">me</span><span class="p">.</span><span class="n">firstName</span> <span class="c1">// =&gt; seek</span>
+<span class="n">me</span><span class="p">[</span><span class="s">&quot;lastName&quot;</span><span class="p">]</span> <span class="c1">//=&gt; truth</span>
+<span class="n">me</span><span class="p">.</span><span class="n">getName</span><span class="p">()</span> <span class="c1">// =&gt; seektruth</span>
+</pre></div>
+
+
+<h3 id="new">new运算符</h3>
+<p>既然JavaScript当中是没有类的，那么new运算符又是在干什么呢？这是JavaScript设计的最让人误解的地方之一。JavaScript是一门函数式编程语言，JavaScript当中函数是一等公民，JavaScript当中函数也是对象，函数对象在被创建的时候会被添加调用属性，比较坑的是JavaScript函数有两种调用方式，一种是加了new关键字的调用，一种是没有new关键字的调用，前者会返回一个对象，后者会返回return语句当中的内容。考虑下面的一段函数：</p>
+<!--more-->
+
+<div class="hlcode"><pre><span class="kd">function</span> <span class="nx">Obj</span><span class="p">(</span><span class="nx">name</span><span class="p">){</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">name</span><span class="o">=</span><span class="nx">name</span><span class="p">;</span>
+    <span class="k">return</span> <span class="nx">name</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>如果我们用new运算符来调用：</p>
+<div class="hlcode"><pre><span class="n">obj</span> <span class="o">=</span> <span class="n">new</span> <span class="n">Obj</span><span class="p">(</span><span class="s">&quot;seektruth&quot;</span><span class="p">)</span> <span class="c1">//obj会是一个对象：{&quot;name&quot;: &quot;seektruth&quot;}</span>
+</pre></div>
+
+
+<p>如果我们直接调用：</p>
+<div class="hlcode"><pre><span class="n">obj</span> <span class="o">=</span> <span class="n">Obj</span><span class="p">(</span><span class="s">&quot;seektruth&quot;</span><span class="p">)</span> <span class="c1">//obj会是一个字符串：&quot;seektruth&quot;</span>
+</pre></div>
+
+
+<p>确实设计的挺坑的，我们在调用的时候需要分清楚是否需要使用new，一般来说需要用new关键字来调用的函数会采用大写开头。</p>
+<p>还有更坑的是如果返回的返回值是一个对象：</p>
+<div class="hlcode"><pre><span class="kd">function</span> <span class="nx">Obj</span><span class="p">(</span><span class="nx">name</span><span class="p">){</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">name</span><span class="o">=</span><span class="nx">name</span><span class="p">;</span>
+    <span class="k">return</span> <span class="p">{};</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>这样无论我们是否用new运算符来调用都会返回return语句里的值：</p>
+<div class="hlcode"><pre><span class="n">new</span> <span class="n">Obj</span><span class="p">(</span><span class="s">&quot;seektruth&quot;</span><span class="p">)</span> <span class="c1">//=&gt; {}</span>
+<span class="n">Obj</span><span class="p">(</span><span class="s">&quot;seektruth&quot;</span><span class="p">)</span> <span class="c1">//=&gt; {}</span>
+</pre></div>
+
+
+<p>设计的是什么鬼......</p>
+<h2 id="_2">对象继承</h2>
+<h3 id="_3">原型</h3>
+<p>前面已经说到过JavaScript当中是没有类的，那JavaScript又是怎么来实现继承的呢？答案是通过原型链。在JavaScript当中，每个对象都会有一个原型，在创建对象的时候，如果不加说明的话，对象继承的原型是Object.prototype,函数对象会继承Function.prototype(Function.prototype继承Object.prototype)：</p>
+<div class="hlcode"><pre><span class="n">Object</span><span class="p">.</span><span class="n">prototype</span> <span class="c1">// =&gt; {}</span>
+<span class="n">Function</span><span class="p">.</span><span class="n">prototype</span> <span class="c1">// =&gt; [Function]</span>
+</pre></div>
+
+
+<p>我们可以通过对象的__proto__熟悉来查看对象的原型：</p>
+<div class="hlcode"><pre><span class="n">a</span><span class="o">=</span><span class="p">{}</span>
+<span class="n">a</span><span class="p">.</span><span class="n">__proto__</span>  <span class="c1">// =&gt; {}</span>
+</pre></div>
+
+
+<p>JavaScript通过指定对象的原型来实现继承，指定对象的原型主要有三种方式：
+- 在构造函数当中指明原型
+- 直接修改对象的__proto__属性
+- 是利用Object.create函数</p>
+<p>下面我们依次来看一看</p>
+<h3 id="_4">在构造函数当中指定原型</h3>
+<p>我们可以在构造函数当中指定对象的原型：</p>
+<div class="hlcode"><pre><span class="nx">me</span><span class="o">=</span><span class="p">{</span>
+    <span class="s2">&quot;firstName&quot;</span> <span class="o">:</span> <span class="s2">&quot;seek&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;lastName&quot;</span> <span class="o">:</span> <span class="s2">&quot;truth&quot;</span> <span class="p">,</span>
+    <span class="s2">&quot;getName&quot;</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(){</span>
+        <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">firstName</span><span class="o">+</span><span class="k">this</span><span class="p">.</span><span class="nx">lastName</span><span class="p">;</span> <span class="c1">//this相当于指向这个对象的指针</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">Obj</span><span class="p">(</span><span class="nx">name</span><span class="p">){</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">firstName</span> <span class="o">=</span> <span class="nx">name</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">__proto__</span> <span class="o">=</span> <span class="nx">me</span><span class="p">;</span> <span class="c1">//指定原型为me对象</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>指定了原型之后，我们新建了对象之后就可以访问原型的属性：</p>
+<div class="hlcode"><pre><span class="n">obj</span> <span class="o">=</span> <span class="n">new</span> <span class="n">Obj</span><span class="p">(</span><span class="s">&quot;foo&quot;</span><span class="p">);</span> <span class="c1">// =&gt; { firstName: &#39;foo&#39; }</span>
+<span class="n">obj</span><span class="p">.</span><span class="n">firstName</span> <span class="c1">// =&gt; foo</span>
+<span class="n">obj</span><span class="p">.</span><span class="n">lastName</span> <span class="c1">// =&gt; truth</span>
+<span class="n">obj</span><span class="p">.</span><span class="n">getName</span><span class="p">()</span> <span class="c1">// =&gt; &quot;footruth&quot;</span>
+</pre></div>
+
+
+<p>当访问一个对象的时候，首先会尝试在改对象当中寻找该属性，如果没有就回到原型当中寻找，直到Object.prototype。如果我们在新的对象当中重写了原型当中的属性（方法），那么实际使用的时候我们新写的属性（方法）会覆盖掉原型当中的定义，这有点像基于类的语言的函数重载。</p>
+<p>注意如果原型me对象的lastname属性有改变，因为obj对象是在原型当中寻找属性，那么这个obj对象的lastname属性也会改变：</p>
+<div class="hlcode"><pre><span class="n">me</span><span class="p">.</span><span class="n">lastName</span> <span class="o">=</span> <span class="s">&quot;me&quot;</span>
+<span class="n">obj</span><span class="p">.</span><span class="n">lastName</span> <span class="c1">// =&gt; &quot;me&quot;</span>
+<span class="n">obj</span><span class="p">.</span><span class="n">getName</span><span class="p">()</span> <span class="c1">// =&gt;  &quot;foome&quot;</span>
+</pre></div>
+
+
+<h3 id="_5">直接改变对象的原型</h3>
+<p>我们也可以直接指定（改变）对象的原型：</p>
+<div class="hlcode"><pre><span class="n">obj2</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">obj2</span><span class="p">.</span><span class="n">__proto__</span> <span class="o">=</span> <span class="n">me</span>
+<span class="n">obj2</span><span class="p">.</span><span class="n">firstName</span> <span class="c1">// =&gt; seek</span>
+<span class="n">obj2</span><span class="p">.</span><span class="n">lastName</span> <span class="c1">// =&gt; &quot;me&quot;</span>
+<span class="n">obj2</span><span class="p">.</span><span class="n">getName</span><span class="p">()</span> <span class="c1">// =&gt;  &quot;seekme&quot;</span>
+</pre></div>
+
+
+<h3 id="objectcreate">使用Object.create函数</h3>
+<p>尽管说前两种方法可以解决问题，但是这两种写法并不优雅，因为JavaScript并不是基于类的语言，第一写法很容易给人以误解，<a href="https://www.amazon.cn/JavaScript%E8%AF%AD%E8%A8%80%E7%B2%BE%E7%B2%B9-%E9%81%93%E6%A0%BC%E6%8B%89%E6%96%AF%E2%80%A2%E5%85%8B%E7%BD%97%E5%85%8B%E7%A6%8F%E5%BE%B7/dp/B0097CON2S/ref=sr_1_1?ie=UTF8&amp;qid=1468070819&amp;sr=8-1&amp;keywords=JavaScript%E8%AF%AD%E8%A8%80%E7%B2%BE%E7%B2%B9">JavaScript语言精粹</a>的作者Crockford认为new就不应该出现在JavaScript语言当中，而推荐使用Object.create函数来基于原型来创建对象。Object.create函数的用法很简单：</p>
+<div class="hlcode"><pre><span class="n">obj3</span> <span class="o">=</span> <span class="n">Object</span><span class="p">.</span><span class="n">create</span><span class="p">(</span><span class="n">me</span><span class="p">)</span> <span class="c1">// 以me为原型创建新的对象</span>
+<span class="n">obj3</span><span class="p">.</span><span class="n">firstName</span> <span class="c1">// =&gt; seek</span>
+<span class="n">obj3</span><span class="p">.</span><span class="n">lastName</span> <span class="c1">// =&gt; &quot;me&quot;</span>
+<span class="n">obj3</span><span class="p">.</span><span class="n">getName</span><span class="p">()</span> <span class="c1">// =&gt;  &quot;seekme&quot;</span>
+</pre></div>
+
+
+<p><code>obj3 = Object.create(me)</code>与<code>obj2 = {};obj2.__proto__ = me</code>是等价的，但是前一种写法更优雅也更易于理解。</p>
+<h2 id="_6">总结</h2>
+<p>JavaScript作为一门基于原型的，函数式的编程语言在设计上有很多优雅与强大之处，但同时又有很多糟粕和坑，正式如此，JavaScript也是被误解最多语言。学习了JavaScript的对象继承机制，感觉自己的水平还是大有长进的。</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2017 smile man.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2017-03-24 21:07:07</p>
+      </span>
+    </div>
+  </body>
+</html>

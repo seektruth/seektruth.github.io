@@ -1,0 +1,91 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Python运算符重载 - smile man的wiki</title>
+    <meta name="keywords" content=""/>
+    <meta name="description" content="smile man 的个人博客"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#python">python</a>&nbsp;&#187;&nbsp;Python运算符重载
+    <span class="updated">Updated&nbsp;
+      2017-03-24 19:24
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Python运算符重载</div>
+
+  <p>运算符重载是一个有很大争议的话题，在C++语言当中被广泛的使用，但是其继任者Java却完全没有给程序员进行运算符重载的机会。Java的设计者认为运算符重载极可能会被滥用而带来很多问题，但Java之外的大多数语言都保留了运算符重载的特性。Java的设计者的考虑并非全无道理，但是技术只是工具，并没有好坏，只有运用的好坏，任何特性都可能被滥用或者发扬光大，我认为并不应该操作符重载可能被滥用就将其完全删去，毕竟有很多能够很好的运用这项技术并能以此写出很好的代码得程序员。应该把是否使用操作符重载交给程序员来决定。</p>
+<h2 id="python">Python当中的运算符重载</h2>
+<p>在Python当中，程序员可以使用操作符重载，但同时又有着很多的限制。顺便提一下，很多人说Python是一门比较简单的语言，我其实并不太同意。确实Python入门比较简单，能够很快调用一些现有的库来做出一些东西，但这很大意义上只是API的调用，在其背后有着一些很复杂的东西，包括内存模型、继承、抽象类、集合、函数其实都有很多繁琐的细节，希望能够慢慢都把这些慢慢沉淀，写出博客，下面还是回到正题，python的运算符重载。</p>
+<h3 id="python_1">Python运算符重载的限制</h3>
+<p>Python在保留运算符重载的同时，也有很多的限制：</p>
+<ol>
+<li>无法对内置的对象进行操作符的重载</li>
+<li>无法构造新的运算符</li>
+<li>某些运算符不能被重载（is，and，or，not，但是其位运算的版本&amp;，|，~，可以被重载）</li>
+</ol>
+<h3 id="_1">一元运算符</h3>
+<p>Python的运算符重载概念上都很简单，也就是需要实现相关的特殊方法，首先看一元运算符，python当中的一元运算符主要有三个，-（取反）、+（一元加）和~（按位取反），其对应的特殊方法分别是__neg__,__pos__,__invert__。其都只接受一个参数，也就是受运算的的值。其中值得一提的是__pos__,其一般就返回自身：</p>
+<div class="hlcode"><pre><span class="k">def</span> <span class="nf">__pos__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">Vector</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</pre></div>
+
+
+<p>也就是说，一般来说x 就 == + x， 但是在标准类库当中也有例外的情况，比如decimal类，设置不同的精度就可能会导致x == +x 为假的情况。</p>
+<h3 id="_2">加号</h3>
+<p>加减乘除的重载是比较常用的，加号重载对应的特殊方法是__add__,这里有一个需要注意的问题就是，有的时候a + b能够得到正确的结果但是b + a却会报出错误，这是应为 a 实现了__add__方法，但是b没有实现，由于可能b是内置类型，我们也无法为其实现__add__方法，这时候我们可以实现__radd__方法，这样b + a也能顺利执行，需要注意的是__radd__的方法比__add__的优先级要低。下面是__radd__的常见实现。</p>
+<div class="hlcode"><pre><span class="k">def</span> <span class="nf">__radd__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">other</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">other</span> <span class="o">+</span> <span class="bp">self</span>
+</pre></div>
+
+
+<p>所有可以重载的二元运算符和其对应的特殊方法如下</p>
+<ol>
+<li>+ __add__</li>
+<li>- __sub__</li>
+<li>* __mul__</li>
+<li>/ __truediv__</li>
+<li>// __floordiv__</li>
+<li>% __mod__</li>
+<li>divmod() __divmod__</li>
+<li>**,pow() __pow__</li>
+<li>@(python3.5新增的矩阵运算)</li>
+<li>&amp; __and__</li>
+<li>| __or__</li>
+<li>^ __xor__</li>
+<li>&lt;&lt; __lshift__</li>
+<li>>> __shift__ </li>
+</ol>
+<p>这里有一个细节问题是，在操作符重载当中，很容易出现类型错误的情况，这里比较好的一种实践是捕获错误，在except块当中抛出NotImplemented</p>
+<div class="hlcode"><pre><span class="k">def</span> <span class="nf">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">other</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="o">...</span>
+    <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">NotImplemented</span>
+</pre></div>
+
+
+<h3 id="_3">比较运算符和赋值运算符</h3>
+<p>比较运算符有六个==(__eq__),!=(__ne__),&gt;=(__ge__),&lt;=(__le__),&gt;(__gt__),和&lt;(__lt__),其中__eq__和__ne__已经在object类当中实现了，其中__eq__比价两个对象的id而__ne__返回not __eq__,在实际当中，我们不需要显示的实现__ne__方法。因为Python是弱类型的语言，在比较的时候我们常常需要判断变量的类型，我们可以使用isinstance函数来进行判断，isinstance函数接受两个参数，第一个参数是个变量第二个参数是一个类型。</p>
+<p>最后是关于+=(如前面所列共有14种)这一类的运算符，只要我们实现了__add__方法，就可以正常的使用 += 运算符了，这时候python解释器会把 a += b 看成一个语法糖，解释器会将其解释为 a = a + b。除此之外，我们也可以实现 += 对应的特殊方法__iadd__(其他运算同理)，直接对a进行操作，__iadd__函数一般就返回self。这两者的不同是前者是a+b产生一个新的对象，然后将其赋给a，而后者是直接在a上进行操作。</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2017 smile man.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2017-03-24 21:07:07</p>
+      </span>
+    </div>
+  </body>
+</html>
