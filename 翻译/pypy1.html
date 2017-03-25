@@ -1,0 +1,58 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>pypy架构(1) - smile man的wiki</title>
+    <meta name="keywords" content=""/>
+    <meta name="description" content="smile man 的个人博客"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#翻译">翻译</a>&nbsp;&#187;&nbsp;pypy架构(1)
+    <span class="updated">Updated&nbsp;
+      2017-03-25 22:30
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">pypy架构(1)</div>
+
+  <h1 id="pypy">PyPy架构</h1>
+<p>PyPy是一个Python的实现，同时也是也是一个动态语言实现的框架。</p>
+<p>本文假设读者熟悉解释器和编译器的一些基础概念，比如字节码和常量折叠（constant folding）。</p>
+<h2 id="1">1.一点历史</h2>
+<p>Python是一门高级的动态编程语言，其由荷兰程序员Guido van Rossum在上世纪八十年代的末期发明。Guido的Python最初实现是是传统的由C语言写的字节码解释器，这也就是为人们熟知的CPython。如今，除了官方的CPython，还有许许多多的Python实现。其中最著名的有由Java语言编写，并和Java代码有着良好的互操作性质的Jython，C#编写并和微软的.NET框架交互的IronPython，还有本文的主题PyPy。CPython依然是当今使用最广泛的并且唯一支持新一代的Python——Python3的是实现(译注：原文写作时间较早，有些过时，很多实现已经支持Python3)。本文会介绍PyPy的设计决策和使得其与其他Python实现显得与众不同之处。</p>
+<h2 id="2pypy">2.PyPy概览</h2>
+<p>PyPy完全由Python编写，其当中没有任何C的符号，PyPy的源代码树当中主要有两大组件：Python解释器和RPython翻译工具链。Python解释器是使用PyPy作为Python实现的程序员所面对的运行时环境，实际上其是由Python的一个子集编写的，这个子集被称为严格python(restrict Python或者abbreciated RPython)。之所以要使用RPython来编写Python解释器是因为这样解释器可以很好的和PyPy的第二个部分RPython翻译工具链很好的结合在一起使用。RPython翻译器将RPython代码翻译为特定的低级语言，大部分情况下，这个低级语言就是C语言。这意味着PyPy是自主(self-hosting)的实现，也就是说解释器由其实现（解释）的语言编写。在整篇中我们可以看到，RPython翻译器也使得PyPy称为一个通用的动态语言实现框架。</p>
+<h2 id="3python">3.Python解释器</h2>
+<p>由于RPython是Python的一个严格子集，所以PyPy的Python解释器不用翻译就能够运行在另一个Python实现之上。当然，这样可能会使得解释器的速度极慢，但这使得快速测试解释器的改变成为可能。这也使得一般的Python调试工具可以用来调试PyPy的解释器。大多数的PyPy解释器测试都能够同时运行在未翻译和翻译之后的解释器上。这使得在开发当中能够快速的测试，并能保证翻译之后的解释器和未翻译的解释器能够有相同的外部表现。</p>
+<p>在大多数部分，PyPy的Python解释器的很多细节和CPython都极其的相似。在解释当中，两者几乎使用同样的字节码和数据结构。两者的主要区别是PyPy有一个机智的被称为对象空间(object spaces或者objspaces)的抽象。一个对象空间封装了需要表示和操作的Python数据类型的所有信息。列如，对两个Python对象进行二进制操作或者获取对象的一个属性都完全在对象空间当中被处理。这使得Python解释器不需要知道Python对象实现的细节。字节码解释器将将Python对象看为黑盒，但需要对对象进行操作的时候，字节码解释器调用对象空间的方法来进行处理。举例来说，这里有一个粗糙的二进制操作BINARY_ADD的实现，其在两个对象被+运算符结合的时候被调用。注意这里操作对象如何不被解释器检查，所有的操作委托给了对象空间。</p>
+<div class="hlcode"><pre><span class="k">def</span> <span class="nf">BINARY_ADD</span><span class="p">(</span><span class="n">space</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
+    <span class="n">object1</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span> <span class="c"># pop left operand off stack</span>
+    <span class="n">object2</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span> <span class="c"># pop right operand off stack</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">space</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">object1</span><span class="p">,</span> <span class="n">object2</span><span class="p">)</span> <span class="c"># perform operation</span>
+    <span class="n">frame</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="c"># record result on stack</span>
+</pre></div>
+
+
+<p>对象空间的抽象有着很多的优势，首先它使得我们可以在不修改解释器的情况下创建和移除新的数据类型。同时因为对象对象空间是操作对象的唯一方法，对象空间可以拦截、代理或者记录对象上的操作。使用对象空间的强大抽象，PyPy实验了惰性求值(thunkng)——结果在需要的时候才被计算，和腐化(tainting)——对象上的任何操作都会抛出一个异常(在通过不信任的代码传递敏感数据的时候很有用)，当然，对象空间的最重要的作用，会在第四节当中讨论。</p>
+<p>在有香草味(vanilla,不懂)的PyPy解释当中使用的对象空间被称为标准对象空间。在对象空间系统提供的抽象之上，标准命名空间提供了另一种级别上的迂回(indirection)；一个类型可以有多个实现。数据类型上的操作会被分配到多个方法上。这使得我们对于特定的数据片段可以选择最高效的表示。举例来说，Python的long类型(表面上一个较大的整数类型)，但数据比较小的时候，其可以被储存为标准的机器字长大小的整数。消耗更多内存的计算的任意精度整数类型只会在必要的时候被使用。甚至有一个使用标记指针的Python整数实现。容器类型也可以被具体化为几个数据类型。举例来说，PyPy有一个键限定为字符串的特殊字典(哈希表)类型。同样的数据类型可以被不同的实现所表示这一事实在应用级的代码当中是完全透明的；键限定为字符串的字典和普通的字典是等价的，当其放入键非为字符串的键值对时其会退化为普通的字典。</p>
+<p>PyPy区别对待解释级的代码和应用级的代码。大部分的解释器由解释级的代码编写，解释级的代码必须是翻译后的RPython。解释级的代码直接和对象空间协同工作并包装Java对象。应用级的代码总是被PyPy字节码解释器所解释。和C、Java相比，RPython的解释器代码是如此的简单，PyPy的开发者发现使用纯应用级的代码来编写解释器的某些部分会非常的简单。因此，PyPy支持在解释器当中嵌入应用级的代码。比如Python中的向标准输出输出的print语句，是有应用级的Python实现的。内置模块同样可以由解释级和应用级的代码共同来实现。</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2017 smile man.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2017-03-25 22:34:25</p>
+      </span>
+    </div>
+  </body>
+</html>

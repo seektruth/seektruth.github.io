@@ -1,0 +1,60 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>python类库常用工具 - smile man的wiki</title>
+    <meta name="keywords" content=""/>
+    <meta name="description" content="smile man 的个人博客"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#python">python</a>&nbsp;&#187;&nbsp;python类库常用工具
+    <span class="updated">Updated&nbsp;
+      2017-03-25 19:50
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">python类库常用工具</div>
+
+  <p>本文记录一些很有用的但是在关键时刻又容易忘记的工具。</p>
+<h2 id="lru_cache">lru_cache</h2>
+<p>lrucache是定义在functools包当中的装饰器，可以使得函数可以缓存曾经执行的结果。</p>
+<p>用法如下：</p>
+<div class="hlcode"><pre><span class="nd">@functools.lru_cache</span><span class="p">(</span><span class="n">maxsize</span> <span class="o">=</span> <span class="mi">128</span><span class="p">,</span><span class="n">typed</span> <span class="o">=</span> <span class="bp">False</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">fib</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">fib</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">fib</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span> <span class="k">if</span> <span class="n">n</span> <span class="o">&gt;</span> <span class="mi">2</span> <span class="k">else</span> <span class="n">n</span>
+</pre></div>
+
+
+<p>maxsize和typed是可选参数，maxsize制定了可以缓存多少个结果，为了更好的性能，maxsize一般是2的指数。typed如果设置为区别对待不同的参数类型，比如1和1.0，会被认为是不同的。</p>
+<h2 id="zip_longest">zip_longest</h2>
+<p>用法：</p>
+<div class="hlcode"><pre><span class="n">itertools</span><span class="o">.</span><span class="n">zip_longest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">other</span><span class="p">,</span><span class="n">fillvalue</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+</pre></div>
+
+
+<h2 id="copy">copy</h2>
+<p>浅负责和深复制，对所有的对象适用,用法如下：</p>
+<div class="hlcode"><pre><span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">copy</span><span class="p">,</span><span class="n">deepcopy</span>
+<span class="n">a1</span> <span class="o">=</span> <span class="n">copy</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="n">b1</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+</pre></div>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2017 smile man.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2017-03-25 22:34:25</p>
+      </span>
+    </div>
+  </body>
+</html>
