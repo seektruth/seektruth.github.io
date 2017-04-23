@@ -1,0 +1,62 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>java原子变量 - smile man的wiki</title>
+    <meta name="keywords" content=""/>
+    <meta name="description" content="smile man 的个人博客"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Java">Java</a>&nbsp;&#187;&nbsp;java原子变量
+    <span class="updated">Updated&nbsp;
+      2017-04-08 13:56
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">java原子变量</div>
+
+  <h2 id="java">Java原子变量</h2>
+<p>原子变量是Java的concurrent包当中的提供的并发工具，其提供了锁（synchronized关键字等）之外的在CPU指令一级进行同步的方法。</p>
+<h3 id="cascompare-and-set">CAS(compare and set)</h3>
+<p>最常见的在多线程的程序当中进行同步的方法就是加锁（Java中对于较简单的就是synchronized关键字），但是锁有很多坏处，其中的最显著的就是效率问题，当锁过多的时候，线程之间的竞争会很严重，效率会严重下降。</p>
+<p>CAS相比较而言，并不限制多个线程对资源的同时访问，而是在对资源进行更新的时候将某个线程得到的原值A和内存中的值进行比较，如果A和内存当中的值相同，那么说明原值还没有被其他线程修改过，那么这个线程的更新就是可靠的，可以把值写回内存。如果说A与内存当中的值不同，那么就已经说明原值已被其他线程更新，这是就需要重新取值进行计算。</p>
+<h3 id="_1">实现</h3>
+<p>在实现当中，作者使用了unsafe类，一般来讲，unsafe类提供了使Java虚拟机直接操作内存的方法。以AtomicInteger为例,对其更新操作会由unsafe类直接对内存进行操作,：</p>
+<div class="hlcode"><pre>    <span class="c1">//AtomicInteger.java</span>
+    <span class="n">public</span> <span class="n">final</span> <span class="kt">int</span> <span class="nf">getAndIncrement</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="n">unsafe</span><span class="p">.</span><span class="n">getAndAddInt</span><span class="p">(</span><span class="n">this</span><span class="p">,</span> <span class="n">valueOffset</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+    <span class="p">}</span>
+</pre></div>
+
+
+<p>上面的valueOffset是原子类当中的变量，记录了变量在内存的偏移量。Unsafe类当中的getAndAddInt方法会首先取得内存当中的原值，this.compareSwqpInt是本地方法，其实现直接利用了CPU的CAS指令，会比较内存值和object值，在比较相同之后才会进行更新，否则会一直循环。</p>
+<div class="hlcode"><pre>    <span class="c1">//Unsafe.java</span>
+    <span class="n">public</span> <span class="n">final</span> <span class="kt">int</span> <span class="nf">getAndAddInt</span><span class="p">(</span><span class="n">Object</span> <span class="n">var1</span><span class="p">,</span> <span class="kt">long</span> <span class="n">var2</span><span class="p">,</span> <span class="kt">int</span> <span class="n">var4</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kt">int</span> <span class="n">var5</span><span class="p">;</span>
+        <span class="k">do</span> <span class="p">{</span>
+            <span class="n">var5</span> <span class="o">=</span> <span class="n">this</span><span class="p">.</span><span class="n">getIntVolatile</span><span class="p">(</span><span class="n">var1</span><span class="p">,</span> <span class="n">var2</span><span class="p">);</span>
+        <span class="p">}</span> <span class="k">while</span><span class="p">(</span><span class="o">!</span><span class="n">this</span><span class="p">.</span><span class="n">compareAndSwapInt</span><span class="p">(</span><span class="n">var1</span><span class="p">,</span> <span class="n">var2</span><span class="p">,</span> <span class="n">var5</span><span class="p">,</span> <span class="n">var5</span> <span class="o">+</span> <span class="n">var4</span><span class="p">));</span>
+
+        <span class="k">return</span> <span class="n">var5</span><span class="p">;</span>
+    <span class="p">}</span>
+</pre></div>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2017 smile man.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2017-04-23 21:08:30</p>
+      </span>
+    </div>
+  </body>
+</html>

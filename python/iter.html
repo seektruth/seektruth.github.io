@@ -1,0 +1,73 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>迭代器和可迭代对象 - smile man的wiki</title>
+    <meta name="keywords" content=""/>
+    <meta name="description" content="smile man 的个人博客"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#python">python</a>&nbsp;&#187;&nbsp;迭代器和可迭代对象
+    <span class="updated">Updated&nbsp;
+      2017-04-08 15:09
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">迭代器和可迭代对象</div>
+
+  <p>在Python当中，可迭代对象扮演着重要的角色，in运算符作用于可迭代的对象，list等许多内置函数也以可迭代对象作为参数。</p>
+<h2 id="getitem____iter"><strong>getitem__和__iter</strong></h2>
+<p>如果对象实现了__getitem__方法，那么对象就已经是可迭代的。当__iter__方法没有被实现的时候，Python会尝试按顺序读取元素来构造迭代器。</p>
+<p>更Pythonic的实现方法是实现__iter__特殊方法，其返回一个可迭代的对象。我们可以在其中返回一个内置可迭代的对象，比如list或者set。</p>
+<h2 id="iterableiterator">Iterable和Iterator</h2>
+<p>两者都是定义在abc(abstract class)模块当中的抽象类（我们不用显示的继承它们）。分别表示可迭代和迭代器，Iterable当中只有一个方法__iter__,实现了__iter__的对象就会被认为是Iterable的子类。Iterator是Iterable的子类，其多了一个方法__next__,我们通常使用Iterator来生成Iterable。值得注意的是Iterator类中并没有如同Java一样有hasNext类似的方法，在__next__方法当中，当迭代需要停止的时候，我们抛出StopIteration异常。在迭代器中的__iter__方法中，通常返回self，或者可以显式的继承abc.Iterator。</p>
+<p>下面截取自《fluent Python》当中的一个例子：</p>
+<div class="hlcode"><pre><span class="n">RE_WORD</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">&#39;\w+&#39;</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">Sentence</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">text</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">text</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">words</span> <span class="o">=</span> <span class="n">RE_WORD</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">SentenceIterator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">words</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">SentenceIterator</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">words</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">words</span> <span class="o">=</span> <span class="n">words</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">def</span> <span class="nf">__next__</span><span class="err">：</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">word</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">words</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">StopIteration</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">word</span>
+
+    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span>
+</pre></div>
+
+
+<p>这里有一点需要注意的是直接将Setence实现为迭代器的子类（实现__next__)方法不是一种好的做法，我们必须要从可迭代对象当中得到相互独立的迭代器，每个迭代器需要保存自己的内部状态（上面的self.index),这是一种错误的做法，如上面的例子所示，正确的做法是在__iter__返回新的迭代器。</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2017 smile man.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2017-04-23 21:08:30</p>
+      </span>
+    </div>
+  </body>
+</html>

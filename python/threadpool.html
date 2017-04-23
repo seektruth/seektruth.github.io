@@ -1,0 +1,51 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>concurrent.futures线程池进程池 - smile man的wiki</title>
+    <meta name="keywords" content=""/>
+    <meta name="description" content="smile man 的个人博客"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#python">python</a>&nbsp;&#187;&nbsp;concurrent.futures线程池进程池
+    <span class="updated">Updated&nbsp;
+      2017-04-22 10:51
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">concurrent.futures线程池进程池</div>
+
+  <h2 id="_1">线程池和进程池的用法</h2>
+<p>Python的concurrent库当中提供了Thread、Process之上的高级的API，可以利用其来高效（同时指编码和运行效率）的实现并发。</p>
+<p>使用future.ThreadPoolExecutor来初始化线程池执行器。可以仅仅指定一个参数就是线程池当中线程的数量。</p>
+<p>可以在with上下文当中使用线程池，这样执行完毕后线程池会自动关闭。</p>
+<div class="hlcode"><pre>    <span class="n">with</span> <span class="n">futures</span><span class="p">.</span><span class="n">ThreadPoolExecutor</span><span class="p">(</span><span class="n">worker_num</span><span class="p">)</span> <span class="n">as</span> <span class="n">executor</span><span class="o">:</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">executor</span><span class="p">.</span><span class="n">map</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">iter</span><span class="p">)</span>
+</pre></div>
+
+
+<p>可以通过executor的map函数向线程池提交工作，其工作和普通的map函数类似，第一个参数是执行的工作函数，第二个参数是一个可迭代对象，结果会以生成器的形式返回。</p>
+<h2 id="_2">错误处理</h2>
+<p>需要注意的是，默认情况下，在线程池内部的错误不会使得应用程序终止，而是会返回在res结果当中</p>
+<h2 id="_3">解释器锁</h2>
+<p>Python实际是单线程的，某个线程在解释字节码的时候会获得解释器级别的锁，在Python当中一个进程在一个时刻只会有一个线程在被执行。但这并不是说线程不会提高效率，在IO密集的程序当中，很多时候，程序会被阻塞，这样的环境下，线程能大大提高效率，如果要实现真正的并发，可以将ThreadPoolExecutor换为ProcessPoolExecutor，其余用法相似。</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2017 smile man.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2017-04-23 21:08:30</p>
+      </span>
+    </div>
+  </body>
+</html>

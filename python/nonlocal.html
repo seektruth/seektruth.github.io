@@ -1,0 +1,106 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>从一道题说Python闭包、盒猴子补丁、作用域 - smile man的wiki</title>
+    <meta name="keywords" content=""/>
+    <meta name="description" content="smile man 的个人博客"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#python">python</a>&nbsp;&#187;&nbsp;从一道题说Python闭包、盒猴子补丁、作用域
+    <span class="updated">Updated&nbsp;
+      2017-04-23 20:40
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">从一道题说Python闭包、盒猴子补丁、作用域</div>
+
+  <h2 id="_1">一道题</h2>
+<p>今天做LeetCode周赛，真是诸事不顺，创下了历史记录新低。先是开赛了五分钟题目才显示出来，接着是第一道题就被卡住，然后在结束之后1分钟做出来第三题，怎么一个惨淡了得。今天要谈的就是我被卡住的第一题。</p>
+<div class="hlcode"><pre><span class="n">Given</span> <span class="n">a</span> <span class="n">binary</span> <span class="n">tree</span><span class="p">,</span> <span class="k">return</span> <span class="n">the</span> <span class="n">tilt</span> <span class="n">of</span> <span class="n">the</span> <span class="n">whole</span> <span class="n">tree</span><span class="p">.</span>
+
+<span class="n">The</span> <span class="n">tilt</span> <span class="n">of</span> <span class="n">a</span> <span class="n">tree</span> <span class="n">node</span> <span class="n">is</span> <span class="n">defined</span> <span class="n">as</span> <span class="n">the</span> <span class="n">absolute</span> <span class="n">difference</span> <span class="n">between</span> <span class="n">the</span> <span class="n">sum</span> <span class="n">of</span> <span class="n">all</span> <span class="n">left</span> <span class="n">subtree</span> <span class="n">node</span> <span class="n">values</span> <span class="n">and</span> <span class="n">the</span> <span class="n">sum</span> <span class="n">of</span> <span class="n">all</span> <span class="n">right</span> <span class="n">subtree</span> <span class="n">node</span> <span class="n">values</span><span class="p">.</span> <span class="n">Null</span> <span class="n">node</span> <span class="n">has</span> <span class="n">tilt</span> <span class="mf">0.</span>
+
+<span class="n">The</span> <span class="n">tilt</span> <span class="n">of</span> <span class="n">the</span> <span class="n">whole</span> <span class="n">tree</span> <span class="n">is</span> <span class="n">defined</span> <span class="n">as</span> <span class="n">the</span> <span class="n">sum</span> <span class="n">of</span> <span class="n">all</span> <span class="n">nodes</span><span class="err">&#39;</span> <span class="n">tilt</span><span class="p">.</span>
+
+<span class="nl">Input:</span> 
+         <span class="mi">1</span>
+       <span class="o">/</span>   \
+      <span class="mi">2</span>     <span class="mi">3</span>
+<span class="nl">Output:</span> <span class="mi">1</span>
+<span class="nl">Explanation:</span> 
+<span class="n">Tilt</span> <span class="n">of</span> <span class="n">node</span> <span class="mi">2</span> <span class="o">:</span> <span class="mi">0</span>
+<span class="n">Tilt</span> <span class="n">of</span> <span class="n">node</span> <span class="mi">3</span> <span class="o">:</span> <span class="mi">0</span>
+<span class="n">Tilt</span> <span class="n">of</span> <span class="n">node</span> <span class="mi">1</span> <span class="o">:</span> <span class="o">|</span><span class="mi">2</span><span class="o">-</span><span class="mi">3</span><span class="o">|</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">Tilt</span> <span class="n">of</span> <span class="n">binary</span> <span class="n">tree</span> <span class="o">:</span> <span class="mi">0</span> <span class="o">+</span> <span class="mi">0</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">=</span> <span class="mi">1</span>
+</pre></div>
+
+
+<h2 id="_2">闭包与作用域</h2>
+<p>首先我就理解错了题意，以为tilt是abs(left.val - right.val)不用考虑left和right的子节点，实际上是abs(sum(left)-sum(right)), 在这样的情况下，我很快写出一个递归函数来求解：</p>
+<div class="hlcode"><pre>    <span class="k">def</span> <span class="nf">findTilt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">root</span><span class="p">:</span> <span class="k">return</span> <span class="mi">0</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">def</span> <span class="nf">r</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
+            <span class="n">left</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">left</span><span class="o">.</span><span class="n">val</span> <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">left</span> <span class="k">else</span> <span class="mi">0</span>
+            <span class="n">right</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">right</span><span class="o">.</span><span class="n">val</span> <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">right</span> <span class="k">else</span> <span class="mi">0</span>
+            <span class="n">c</span> <span class="o">+=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">left</span> <span class="o">-</span> <span class="n">right</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">left</span><span class="p">:</span> <span class="n">r</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">left</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">right</span><span class="p">:</span> <span class="n">r</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">right</span><span class="p">)</span>
+        <span class="n">r</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">c0</span>
+</pre></div>
+
+
+<p>这里很快的就遇到了问题，IDE告诉我无法识别内部函数里面的c，这让我大吃一惊，在我的平时的意识里，内部的函数应该能够访问外部的变量，但是这里却爆出了错误，查阅资料后明白这是因为c是不可变的数字类型，而我平时使用时一般是集合类型。要解决这个问题一般有两种方法，在python3后面的版本当中可以使用nonlocal关键字，python2当中可以把c = 0改为c = [0]。</p>
+<p>其实这个问题我曾经在fluent Python当中看到过，但是却没有留下深刻的印象，这次相信映像会比较深刻，在解决到了这个我开始面临刚才提到的理解错题意的问题。</p>
+<h2 id="_3">猴子补丁</h2>
+<p>意思到问题之后，我发现需要计算每个子树的和，当然可以用其他比较简单的方法，这里我灵机一动，想到了猴子补丁，猴子补丁允许在运行时给已经定义的类添加属性，最后我又写了一个递归函数为每个节点加了一个sum属性，最后的解决方案如下;</p>
+<div class="hlcode"><pre><span class="k">class</span> <span class="nc">Solution</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">findTilt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :type root: TreeNode</span>
+<span class="sd">        :rtype: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">root</span><span class="p">:</span> <span class="k">return</span> <span class="mi">0</span>
+        <span class="n">TreeNode</span><span class="o">.</span><span class="n">sum</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">def</span> <span class="nf">s</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
+            <span class="n">node</span><span class="o">.</span><span class="n">sum</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">left</span><span class="p">:</span> <span class="n">node</span><span class="o">.</span><span class="n">sum</span> <span class="o">+=</span> <span class="n">s</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">left</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">right</span><span class="p">:</span> <span class="n">node</span><span class="o">.</span><span class="n">sum</span> <span class="o">+=</span> <span class="n">s</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">right</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">node</span><span class="o">.</span><span class="n">sum</span>
+        <span class="k">def</span> <span class="nf">r</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
+            <span class="n">left</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">left</span><span class="o">.</span><span class="n">sum</span> <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">left</span> <span class="k">else</span> <span class="mi">0</span>
+            <span class="n">right</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">right</span><span class="o">.</span><span class="n">sum</span> <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">right</span> <span class="k">else</span> <span class="mi">0</span>
+            <span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">left</span> <span class="o">-</span> <span class="n">right</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">left</span><span class="p">:</span> <span class="n">r</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">left</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">right</span><span class="p">:</span> <span class="n">r</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">right</span><span class="p">)</span>
+        <span class="n">s</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+        <span class="n">r</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+
+
+<h2 id="_4">总结</h2>
+<p>这次映像确实还是挺深刻的，有很多经验教训值的总结，第一是应该先理解题意，不要急，因为最开始有好几分钟都没有显示试题，所以在最开始的时候会有点急躁，结果导致耽误了更多的时间。第二是纸上得来终觉浅，绝知此事要躬行，光看一遍很难有深刻的映象，需要不断的实践，经典的书籍页需要不断的重读。</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2017 smile man.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2017-04-23 21:08:30</p>
+      </span>
+    </div>
+  </body>
+</html>
