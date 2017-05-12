@@ -1,0 +1,74 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>CAS和ABA - smile man的wiki</title>
+    <meta name="keywords" content=""/>
+    <meta name="description" content="smile man 的个人博客"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Java">Java</a>&nbsp;&#187;&nbsp;CAS和ABA
+    <span class="updated">Updated&nbsp;
+      2017-05-12 19:18
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">CAS和ABA</div>
+
+  <h2 id="casaba">CAS和ABA</h2>
+<p>前面一篇关于Java的文章当中谈到了关于Java的Atomic变量的使用，其没有使用传统的（悲观）锁来实现，而是使用了乐观锁，compare and set的方法来实现。上次在分析的时候的时候没有注意到其中一个很大的问题ABA问题，其可能会造成严重的错误。</p>
+<p>前面说到CAS的原理设计在对数据进行更新的时候把原值和内存值比较以来判断其有没有被修改过。但是这其中可能存在的问题就是：内存的原值是A，其他线程把其值改为了B，然后又将其改回了A，这时CAS会认为值没有被修改过而进行更新操作，但是实际上已经被修改过了，这种情况下可能会有比较严重的问题。</p>
+<h2 id="atomicstampedreference">AtomicStampedReference类</h2>
+<p>AtomicInteger等类对ABA问题并没有防御，Atomic包中的AtomicStampedReference类是实现了ABA问题防御的泛型类，当需要防御ABA问题时，应该使用它而并非简单的原子变量。</p>
+<p>其防御ABA问题的思路是出了记录变量的值，还记录下其一个时间戳:</p>
+<div class="hlcode"><pre>    <span class="k">private</span> <span class="nf">static</span> <span class="nb">class</span> <span class="kt">Pair</span><span class="o">&lt;</span><span class="nb">T</span><span class="o">&gt;</span> <span class="p">{</span>
+        <span class="nx">final</span> <span class="nb">T</span> <span class="nb">reference</span><span class="p">;</span>
+        <span class="nx">final</span> <span class="nx">int</span> <span class="nx">stamp</span><span class="p">;</span>
+        <span class="k">private</span> <span class="nf">Pair</span><span class="p">(</span><span class="na">T</span> <span class="nb">reference</span><span class="p">,</span> <span class="na">int</span> <span class="nx">stamp</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">this.reference</span> <span class="o">=</span> <span class="nb">reference</span><span class="p">;</span>
+            <span class="n">this.stamp</span> <span class="o">=</span> <span class="nx">stamp</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="nx">static</span> <span class="o">&lt;</span><span class="nb">T</span><span class="o">&gt;</span> <span class="kt">Pair</span><span class="o">&lt;</span><span class="nb">T</span><span class="o">&gt;</span> <span class="nx">of</span><span class="p">(</span><span class="nb">T</span> <span class="nb">reference</span><span class="p">,</span> <span class="nx">int</span> <span class="nx">stamp</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="nb">new</span> <span class="kt">Pair</span><span class="o">&lt;</span><span class="nb">T</span><span class="o">&gt;</span><span class="p">(</span><span class="nb">reference</span><span class="p">,</span> <span class="nx">stamp</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+</pre></div>
+
+
+<p>在其实现当中使用了静态内部类来描述，如果对元素的更新依赖于原来的值，我们需要同时取出reference和stamp，在更新值的时候把原来的值和时间戳都传入：</p>
+<div class="hlcode"><pre>    <span class="k">public</span> <span class="nf">boolean</span> <span class="nx">compareAndSet</span><span class="p">(</span><span class="nx">V</span>   <span class="nx">expectedReference</span><span class="p">,</span>
+                                 <span class="nx">V</span>   <span class="nx">newReference</span><span class="p">,</span>
+                                 <span class="nx">int</span> <span class="nx">expectedStamp</span><span class="p">,</span>
+                                 <span class="nx">int</span> <span class="nx">newStamp</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kt">Pair</span><span class="o">&lt;</span><span class="nx">V</span><span class="o">&gt;</span> <span class="n">current</span> <span class="o">=</span> <span class="kt">pair</span><span class="p">;</span>
+        <span class="k">return</span>
+            <span class="nx">expectedReference</span> <span class="o">==</span> <span class="nx">current.reference</span> <span class="o">&amp;&amp;</span>
+            <span class="nx">expectedStamp</span> <span class="o">==</span> <span class="nx">current.stamp</span> <span class="o">&amp;&amp;</span>
+            <span class="p">((</span><span class="nx">newReference</span> <span class="o">==</span> <span class="nx">current.reference</span> <span class="o">&amp;&amp;</span>
+              <span class="nx">newStamp</span> <span class="o">==</span> <span class="nx">current.stamp</span><span class="p">)</span> <span class="o">||</span>
+             <span class="nx">casPair</span><span class="p">(</span><span class="nx">current</span><span class="p">,</span> <span class="kt">Pair</span><span class="bp">.</span><span class="nx">of</span><span class="p">(</span><span class="nx">newReference</span><span class="p">,</span> <span class="nx">newStamp</span><span class="p">)));</span>
+    <span class="p">}</span>
+</pre></div>
+
+
+<p>只有当现在的时间戳和取出运算时候的时间戳相等的时候，才会进行更新，只有在使用时保证时间戳不会ABA，（比如保证时间戳递增）就能解决ABA问题。</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2017 smile man.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2017-05-12 21:22:54</p>
+      </span>
+    </div>
+  </body>
+</html>

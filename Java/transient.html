@@ -1,0 +1,42 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>transient和volatile - smile man的wiki</title>
+    <meta name="keywords" content=""/>
+    <meta name="description" content="smile man 的个人博客"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Java">Java</a>&nbsp;&#187;&nbsp;transient和volatile
+    <span class="updated">Updated&nbsp;
+      2017-05-12 20:53
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">transient和volatile</div>
+
+  <h2 id="transient">transient</h2>
+<p>今天在读concurrent包的源代码的时候，发现其中大量使用了transient关键字和volatile关键字，transient关键字还是今天就特别注意到，volatile关键字虽然也是看到过很多次了，但是一直没有搞的非常清楚，今天在这里记录一下，希望能加深映象。</p>
+<p>transient关键字的作用很简单，表示在串行化时不再持久化该值，也就是说在反串行化时无法再读取到该字段。</p>
+<h2 id="volatile">volatile</h2>
+<p>比较让人头疼的是volatile关键字，简单来说volatile关键字能保证读到最新的值，简单来说Java虚拟机会从内存当中读取值而不是从缓存当中读取值。提供了一种比较轻量级的同步，但是其使用也有很大的局限性，其并不会阻塞线程，并不会保证操作的原子性，在更新需要依赖于原值的情况下依然不可靠，需要锁或者原子变量等机制来保证同步性。如果变量和需要和其他变量一起使用，也并不可靠。比如（start&lt;=end,获取end时可能原来获得的start的最新的值已经被改变)</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2017 smile man.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2017-05-12 21:22:54</p>
+      </span>
+    </div>
+  </body>
+</html>
