@@ -1,0 +1,57 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>死锁 - smile man的wiki</title>
+    <meta name="keywords" content=""/>
+    <meta name="description" content="smile man 的个人博客"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#技术">技术</a>&nbsp;&#187;&nbsp;死锁
+    <span class="updated">Updated&nbsp;
+      2017-05-25 18:44
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">死锁</div>
+
+  <h2 id="_1">死锁</h2>
+<p>关于死锁这个问题，其实在面试当中已经是被问了很多次了，（到目前为止应该是3次），每次问到的时候都说的不是很满意，虽然都没有怎么说错，但也没有让面试官非常满意，确实也是因为在实际的编程当中没有怎么遇到死锁的情况。今天状态恢复，又把现代操作系统的书重新翻出来把死锁这一节又详细的看了一看。</p>
+<h3 id="_2">什么是死锁</h3>
+<p>面试的时候如果问道死锁，这一般就是第一个问题。</p>
+<p>说的简单一点，就是进程（线程）之间互相等待，都不能执行。具体来说，死锁有下面4个条件：</p>
+<ol>
+<li>互斥，资源只能被一个（一般来说，有限个）</li>
+<li>持有并等待，进程持有资源并要进行等待</li>
+<li>资源无法从外部释放，只能由拥有它的进程释放</li>
+<li>循环等待</li>
+</ol>
+<h3 id="_3">怎么解决死锁</h3>
+<p>其实并没有特别好的方法，主要有以下几种策略</p>
+<ol>
+<li>置之不理，这种就不细说了。</li>
+<li>检测并处理，可以使用资源图来检测死锁，来从死锁当中恢复的方法大概有以下几种：（1）回滚，（2）kill掉进程</li>
+<li>死锁避免，有个银行家算法，需要知道未来的锁的申请情况，在实际上就是天方夜谭</li>
+<li>死锁预防，主要是避免死锁形成的条件，主要有两种比较可行的方法，第一是一次性获得所需要的锁，第二是按照一定的顺序来获取锁，比如优先级从大到下，这样能够保证不形成循环等待，在以往的面试当中，似乎是这一点一直没有答出来。</li>
+</ol>
+<p>除了上面的这些方法，还有其他一些特定的方法，比如二阶段上锁，先对所有的需要的资源进行加锁，如果这一步无法完成，就把已经加的锁全部释放掉，然后重新尝试加锁，这种方法在数据库当中使用的比较多。在一次面试当中，我也答出了这一点，但是面试官似乎不是很以为然。</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2017 smile man.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2017-05-25 19:31:07</p>
+      </span>
+    </div>
+  </body>
+</html>
