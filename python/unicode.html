@@ -1,0 +1,45 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>unicode和utf8 - smile man的wiki</title>
+    <meta name="keywords" content=""/>
+    <meta name="description" content="smile man 的个人博客"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#python">python</a>&nbsp;&#187;&nbsp;unicode和utf8
+    <span class="updated">Updated&nbsp;
+      2017-07-11 20:45
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">unicode和utf8</div>
+
+  <h1 id="unicodeutf">unicode和utf编码</h1>
+<p>Unicode是什么，Unicode和utf8编码有什么区别，如果把这作为一道面试题，我估计你能够答对的不会超过10%。简单来说，Unicode是一个标准，建立了一个字符到数字的映射，通常用类似U+2630这样的方式来表示。每个字符所对应的数字被称为code points，但是Unicode无法被直接编码，比如2626是应该解释为(26/26)还是（2626）？这就需要字符编码，字节编码对code point进行了相关的转换。</p>
+<h1 id="python">相关的Python函数</h1>
+<p>chr： 根据code point 获得字符</p>
+<p>ord： 根据字符获得code point</p>
+<p>struct模块: 字节相关封包和转换</p>
+<p>字节解码：bytes.decode</p>
+<p>字符串编码： str.encode</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2017 smile man.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2017-07-11 21:01:02</p>
+      </span>
+    </div>
+  </body>
+</html>
