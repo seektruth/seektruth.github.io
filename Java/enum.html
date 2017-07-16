@@ -1,0 +1,97 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>枚举 - smile man的wiki</title>
+    <meta name="keywords" content=""/>
+    <meta name="description" content="smile man 的个人博客"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Java">Java</a>&nbsp;&#187;&nbsp;枚举
+    <span class="updated">Updated&nbsp;
+      2017-07-16 21:22
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">枚举</div>
+
+  <h1 id="java">Java枚举</h1>
+<p>按照我现在的理解，枚举就是静态的单例的类的集合。</p>
+<h3 id="_1">枚举的定义</h3>
+<div class="hlcode"><pre><span class="kd">public</span> <span class="kd">enum</span> <span class="n">Grade</span> <span class="o">{</span>
+  <span class="n">A</span><span class="o">,</span> <span class="n">B</span><span class="o">,</span> <span class="n">C</span><span class="o">,</span> <span class="n">D</span><span class="o">,</span> <span class="n">F</span><span class="o">,</span> <span class="n">INCOMPLETE</span>
+<span class="o">};</span>
+</pre></div>
+
+
+<p><code>Grade.A</code>...等相当于就是静态的单例的类</p>
+<h3 id="_2">遍历枚举的值</h3>
+<div class="hlcode"><pre><span class="kd">public</span> <span class="kt">void</span> <span class="nf">listGradeValues</span><span class="o">(</span><span class="n">PrintStream</span> <span class="n">out</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+  <span class="k">for</span> <span class="o">(</span><span class="n">Grade</span> <span class="n">g</span> <span class="o">:</span> <span class="n">Grade</span><span class="o">.</span><span class="na">values</span><span class="o">())</span> <span class="o">{</span>
+    <span class="n">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Allowed value: &#39;&quot;</span> <span class="o">+</span> <span class="n">g</span> <span class="o">+</span> <span class="s">&quot;&#39;&quot;</span><span class="o">);</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<h3 id="_3">枚举可以有构造方法</h3>
+<p>这时类名的定义和方法之间要用分号分开</p>
+<div class="hlcode"><pre><span class="kd">public</span> <span class="kd">enum</span> <span class="n">NewsRSSFeedEnum</span> <span class="o">{</span> 
+   <span class="n">YAHOO_TOP_STORIES</span><span class="o">(</span><span class="s">&quot;&lt;a href=&quot;</span><span class="nl">http:</span><span class="c1">//rss.news.yahoo.com/rss/topstories&quot;&gt;&lt;code&gt;http://rss.news.yahoo.com/rss/topstories&lt;/code&gt;&lt;/a&gt;&quot;), </span>
+
+   <span class="n">CBS_TOP_STORIES</span><span class="o">(</span><span class="s">&quot;&lt;a href=&quot;</span><span class="nl">http:</span><span class="c1">//feeds.cbsnews.com/CBSNewsMain?format=xml&quot;&gt;&lt;code&gt;http://feeds.cbsnews.com/CBSNewsMain?format=xml&lt;/code&gt;&lt;/a&gt;&quot;), </span>
+
+   <span class="n">LATIMES_TOP_STORIES</span><span class="o">(</span><span class="s">&quot;&lt;a href=&quot;</span><span class="nl">http:</span><span class="c1">//feeds.latimes.com/latimes/news?format=xml&quot;&gt;&lt;code&gt;http://feeds.latimes.com/latimes/news?format=xml&lt;/code&gt;&lt;/a&gt;&quot;); </span>
+
+   <span class="kd">private</span> <span class="n">String</span> <span class="n">rss_url</span><span class="o">;</span> 
+
+   <span class="kd">private</span> <span class="nf">NewsRSSFeedEnum</span><span class="o">(</span><span class="n">String</span> <span class="n">rss</span><span class="o">)</span> <span class="o">{</span> 
+       <span class="k">this</span><span class="o">.</span><span class="na">rss_url</span> <span class="o">=</span> <span class="n">rss</span><span class="o">;</span> 
+   <span class="o">}</span> 
+
+   <span class="kd">public</span> <span class="n">String</span> <span class="nf">getRssURL</span><span class="o">()</span> <span class="o">{</span> 
+       <span class="k">return</span> <span class="k">this</span><span class="o">.</span><span class="na">rss_url</span><span class="o">;</span> 
+   <span class="o">}</span> 
+<span class="o">}</span>
+</pre></div>
+
+
+<h3 id="enumsetenummap">EnumSet和EnumMap</h3>
+<p>EnumSet 类提供一个静态方法 range 让迭代很容易完成：</p>
+<div class="hlcode"><pre><span class="k">for</span><span class="o">(</span><span class="n">WeekDayEnum</span> <span class="n">day</span> <span class="o">:</span> <span class="n">EnumSet</span><span class="o">.</span><span class="na">range</span><span class="o">(</span><span class="n">WeekDayEnum</span><span class="o">.</span><span class="na">Mon</span><span class="o">,</span> <span class="n">WeekDayEnum</span><span class="o">.</span><span class="na">Fri</span><span class="o">))</span> <span class="o">{</span> 
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">day</span><span class="o">);</span> 
+<span class="o">}</span>
+</pre></div>
+
+
+<p>EnumMap 也是一个高性能的 Map 接口实现，用来管理使用枚举类型作为 keys 的映射表，内部是通过数组方式来实现。EnumMap 将丰富的和安全的 Map 接口与数组快速访问结合到一起，如果你希望要将一个枚举类型映射到一个值，你应该使用 EnumMap。看下面的例子：</p>
+<div class="hlcode"><pre><span class="kd">private</span> <span class="kd">static</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">WeekDayEnum</span><span class="o">,</span> <span class="n">RainbowColor</span><span class="o">&gt;</span> <span class="n">schema</span> <span class="o">=</span> 
+           <span class="k">new</span> <span class="n">EnumMap</span><span class="o">&lt;</span><span class="n">WeekDayEnum</span><span class="o">,</span> <span class="n">RainbowColor</span><span class="o">&gt;(</span><span class="n">WeekDayEnum</span><span class="o">.</span><span class="na">class</span><span class="o">);</span> 
+<span class="kd">static</span><span class="o">{</span> 
+   <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">WeekDayEnum</span><span class="o">.</span><span class="na">values</span><span class="o">().</span><span class="na">length</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span> 
+       <span class="n">schema</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">WeekDayEnum</span><span class="o">.</span><span class="na">values</span><span class="o">()[</span><span class="n">i</span><span class="o">],</span> <span class="n">RainbowColor</span><span class="o">.</span><span class="na">values</span><span class="o">()[</span><span class="n">i</span><span class="o">]);</span> 
+   <span class="o">}</span> 
+<span class="o">}</span> 
+<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;What is the lucky color today?&quot;</span><span class="o">);</span> 
+<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;It&#39;s &quot;</span> <span class="o">+</span> <span class="n">schema</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">WeekDayEnum</span><span class="o">.</span><span class="na">Sat</span><span class="o">));</span>
+</pre></div>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2017 smile man.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2017-07-16 21:43:23</p>
+      </span>
+    </div>
+  </body>
+</html>
